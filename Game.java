@@ -470,7 +470,6 @@ public class Game
 		}
 		Item fuelItem = fuelStation.getItem(0);
 		skipLine();
-		System.out.println("fuel: " + fuelItem.getStock() + " price: " + fuelItem.getPrice());
 		print(" ", 79, false, "Wallet: ", "back");
 		System.out.printf("§%.2f\n", player.getWallet());
 		int shipLength = playerShip.getName().length();
@@ -623,6 +622,13 @@ public class Game
 	public void buyFuel()
 	{
 		Item fuelItem = fuelStation.getItem(0);
+		print("_", FULL_LINE, true, " ", "front");
+		print(" ", 44, false, "|", "front");
+		print("Welcome to theStationOfFuel", 1, false, "", "none");
+		print(" ", 46, true, "|", "back");
+		print("‾", FULL_LINE, true, " ", "front");
+		System.out.print("   fuel: " + fuelItem.getStock());
+		System.out.printf(" price: %.2f\n",fuelItem.getPrice());
 		System.out.println("How many buckets of " + fuelItem.getName() + " would you like to buy?");
 		userSelection = input.nextInt();
 		double price = fuelItem.getPrice() * userSelection;

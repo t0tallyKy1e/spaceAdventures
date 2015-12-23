@@ -3,18 +3,17 @@
 *     Revisions began on: 04/23/2014
 *
 **    spaceAdventures
-**	  a buying and selling game. Starting with a little bit of seed money, a user can buy
-**    and sell items at the daily market. Each day market prices change and the user can
-**    either buy items or sell items. After a set number of days, the game ends.
+**	  a space adventure, survival, text-based game. The user has the ability to fight
+**	  enemies, visit planets, and make a lot of money(Shards).
 */
 
 public class Driver
 {
 	public static void main (String[] args)
 	{
-		Game MoneyMaker = new Game();
-		MoneyMaker.gameSetup();
-		MoneyMaker.welcomeMessage();
-		MoneyMaker.welcomeMenu();
+		Game spaceAdventures = new Game();
+		spaceAdventures.gameSetup();
+		spaceAdventures.welcomeMessage();
+		spaceAdventures.welcomeMenu();
 	}
 }
