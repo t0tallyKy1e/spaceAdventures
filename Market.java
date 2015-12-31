@@ -27,28 +27,27 @@ public class Market
 	*/
 	public Market()
 	{
-		warehouse.addItem(oxygenTanks, 0);
-		warehouse.addItem(healthPacks, 1);
-		warehouse.addItem(alienRepellent, 2);
-		warehouse.addItem(humanRepellent, 3);
-		warehouse.addItem(spaceTunes, 4);
-		warehouse.addItem(spaceArmor, 5);
-		warehouse.addItem(blasterGuns, 6);
-		warehouse.addItem(roboShipCrew, 7);
-		warehouse.addItem(shipRepairKits, 8);
-		warehouse.addItem(magicSpaceGrass, 9);
-		warehouse.addItem(ships, 10);
-		
-	}//end of Market Constructor
+		warehouse.addItem(oxygenTanks);
+		warehouse.addItem(healthPacks);
+		warehouse.addItem(alienRepellent);
+		warehouse.addItem(humanRepellent);
+		warehouse.addItem(spaceTunes);
+		warehouse.addItem(spaceArmor);
+		warehouse.addItem(blasterGuns);
+		warehouse.addItem(roboShipCrew);
+		warehouse.addItem(shipRepairKits);
+		warehouse.addItem(magicSpaceGrass);
+		warehouse.addItem(ships);
+	}//end of Market Constructor #1
 	
 	/*
 		adds an Item to the warehouse
 		pre: requires an Item to add
 		pre: requires an int for the index location of the Item in the array
 	*/
-	public void addItem(Item item, int index)
+	public void addItem(Item item)
 	{
-		warehouse.addItem(item, index);
+		warehouse.addItem(item);
 	}//end of addItem
 	
 	/*
@@ -61,4 +60,13 @@ public class Market
 	{
 		return warehouse.getItem(index);
 	}//end of getItem
-}
+	
+	/*
+		gets the size of the Market
+		post: returns an int of the size
+	*/
+	public int getSize()
+	{
+		return warehouse.getSize();
+	}//end of getLength
+}//end of Market

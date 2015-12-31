@@ -20,21 +20,33 @@ public class Ship
 	private Item rocketFuel = new Item("Rocket Fuel", 0);
     Inventory fuelTank = new Inventory();
 	
+	
 	public Ship()
 	{
-		fuelTank.addItem(rocketFuel, 0);
+		fuelTank.addItem(rocketFuel);
 	}//end of Ship Constructor #1
 	
+	/*
+		takes in the ship's name
+		pre: requires a String for the ship's name
+	*/
 	public void setName(String shipName)
 	{
 		this.shipName = shipName;
 	}//end of setName
 	
+	/*
+		post: returns the ship's name
+	*/
 	public String getName()
 	{
 		return shipName;
 	}//end of setName
 	
+	/*
+		adds fuel to the ship's tank
+		pre: requires an int for the amount of fuel to add
+	*/
 	public void addFuel(int fuelAmount)
 	{
 		Item fuelItem = fuelTank.getItem(0);
@@ -42,30 +54,29 @@ public class Ship
 		fuelItem.setStock(currentFuel);
 	}//end of addFuel
 	
+	/*
+		removes fuel from the ship's fuel tank
+		pre: requires an int for the amount of fuel to remove from the ship's tank
+	*/
 	public void useFuel(int fuelAmount)
 	{
-		int newFuelAmount = currentFuel - fuelAmount;
-		rocketFuel.setStock(fuelAmount);
+		Item fuelItem = fuelTank.getItem(0);
+		currentFuel = currentFuel - fuelAmount;
+		fuelItem.setStock(currentFuel);
 	}//end of useFuel
 	
+	/*
+		checks the ship's fuel
+		post: returns the ship's fuel as an int
+	*/
 	public int checkFuel()
 	{
 		return currentFuel;
 	}//end of checkFuel
 	
-	public void addItem(Item item, int index)
+	public String getItem(int index)
 	{
-		fuelTank.addItem(item, index);
-	}//end of addItem
-	
-	/*
-		gets an item at a certain index
-		pre: provide an item
-		pre: an int for the index is required
-		post: returns the Item at the index given
-	*/
-	public Item getItem(int index)
-	{
-		return fuelTank.getItem(index);
-	}//end of getItem
+		Item tempItem = fuelTank.getItem(index);
+		return tempItem.getName();
+	}
 }//end of Ship class

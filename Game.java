@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 import java.io.*;
 
 /*
@@ -14,7 +15,7 @@ public class Game
 	private final double VERY_LOW_STOCK = .6;
 	private final double LOW_STOCK = .4;
 	private final double MED_STOCK = .2;
-	private final int FULL_LINE = 117;
+	private final int FULL_LINE = 126;
 	
 	private double wallet;
 	private int current = 0;
@@ -23,27 +24,50 @@ public class Game
 	private int userSelection;
 	
 	private Market spaceMarket = new Market();
+	private Planet currentPlanet = new Planet("HQ");
+	
 	private Player player = new Player();
-	private Item[] randomItems = new Item[Inventory.MAXIMUM_RANDOM_ITEMS];
 	private Ship playerShip = player.getShip();
+	
+	private Attack playerKick = new Attack("Kick", 7);
+	private Attack playerPunch = new Attack("Punch", 4);
+	private Attack playerTackle = new Attack("Tackle", 9);
+	private Attack playerBite = new Attack("Bite", 5);
+	
 	private FuelStation fuelStation = new FuelStation();
 	
-	private Item randomItem1;
-	private Item randomItem2;
-	private Item randomItem3;
-	private Item randomItem4;
-	private Item randomItem5;
+	private PlanetList planets = new PlanetList();
+	private Planet iceCave;
+	private Planet volcanus;
+	private int planetInt;
 	
-	private int randomInt1;
-	private int randomInt2;
-	private int randomInt3;
-	private int randomInt4;
-	private int randomInt5;
+	//iceCave Enemies
+	//---yeti
+	private Enemy yeti = new Enemy("Yeti");
+	private Item yetiFur = new Item("Yeti Fur", randomInt(1,15));
+	//----yeti attacks
+	private Attack spinKick = new Attack("Spin Kick", 8);
+	private Attack stomp = new Attack("Stomp", 10);
+	private Attack hammerPunch = new Attack("Hammer Punch", 5);
+	private Attack bodySlam = new Attack("Body Slam", 20);
+	//---iceFang
+	private Enemy iceFang = new Enemy("Ice Fang");
+	private Item fangs = new Item("Fangs", randomInt(1, 5));
+	//----iceFang attacks
+	private Attack chomp = new Attack("Chomp", 10);
+	private Attack headButt = new Attack("Head Butt", 5);
+	private Attack scratch = new Attack("Scratch", 5);
+	private Attack lick = new Attack("Lick", 2);
+	private Item iceCube = new Item("Ice Cube", 50.0, 200.0);
+	
+	private Enemy tempEnemy;
 	
 	private Scanner input = new Scanner(System.in);
 	private String userString = "";
 	private String saveHere = "";
 	private String shipName = "";
+	private String currentString = "";
+	private int maximumItems = player.getSize();
 	
 	private final int LOTTERY_MIN_JACKPOT = 100;
 	private final int LOTTERY_MIN_NUM = 1;
@@ -59,6 +83,11 @@ public class Game
 	public void gameSetup()
 	{	
 		setMarketStockAndPrice();
+		addPlanets();
+		player.addAttack(playerKick);
+		player.addAttack(playerPunch);
+		player.addAttack(playerTackle);
+		player.addAttack(playerBite);
 	}//end of gameSetup
 	
 	/*
@@ -66,17 +95,10 @@ public class Game
 	*/
 	public void setMarketStockAndPrice()
 	{
-		dailyRandomize();
-		
-		randomItems[0] = randomItem1;
-		randomItems[1] = randomItem2;
-		randomItems[2] = randomItem3;
-		randomItems[3] = randomItem4;
-		randomItems[4] = randomItem5;
-		
-		for(int i = 0; i < Inventory.MAXIMUM_RANDOM_ITEMS; i++)
+		maximumItems = player.getSize();
+		for(int i = 0; i < maximumItems; i++)
 		{
-			Item current = randomItems[i];
+			Item current = spaceMarket.getItem(i);
 			double newPrice;
 			
 			current.setStock(current.getRandomStock());
@@ -127,49 +149,18 @@ public class Game
 	}//end of setMarketStockAndPrice
 	
 	/*
-		sets the random items from randomItem() to randomItem1, 2, 3, 4, and 5
-	*/
-	public void dailyRandomize()
-	{
-		randomItem1 = randomItem();
-		randomItem2 = randomItem();
-		randomItem3 = randomItem();
-		randomItem4 = randomItem();
-		randomItem5 = randomItem();
-	}//end of dailyRandomize
-	
-	/*
-		Picks a random item to determine 5 new items a day
-		post: returns an item
-	*/
-	public Item randomItem()
-	{
-		int random = (int) (Math.random() * Inventory.MAXIMUM_ITEMS);
-		Item randomItem = spaceMarket.getItem(random);
-		
-		while(randomItem == randomItem1 || randomItem == randomItem2 || randomItem == randomItem3 || randomItem == randomItem4 || randomItem == randomItem5)
-		{
-			random = (int) (Math.random() * Inventory.MAXIMUM_ITEMS);
-			randomItem = spaceMarket.getItem(random);
-		}
-		current++;
-		
-		return randomItem;
-	}//end of randomItem
-
-	/*
 		Display a welcome message for the user explaining the game
 	*/
 	public void welcomeMessage()
 	{
-		print("_", FULL_LINE, true, " ", "front");
-		print(" ", 45, false, "|", "front");
+		print("_", FULL_LINE - 2, true, " ", "front");
+		print(" ", 49, false, "|", "front");
 		print("Welcome to spaceAdventures", 1, false, "", "none");
-		print(" ", 46, true, "|", "back");
-		print("‾", FULL_LINE, true, " ", "front");
-		print("*", 37, false, " ", "back");
+		print(" ", 49, true, "|", "back");
+		print("‾", FULL_LINE - 2, true, " ", "front");
+		print("*", 41, false, " ", "back");
 		System.out.print("For best results, play in full-screen mode");
-		print("*", 38, true, " ", "front");
+		print("*", 41, true, " ", "front");
 	}//end of welcomeMessage
 	
 	/*
@@ -178,8 +169,8 @@ public class Game
 	public void welcomeMenu()
 	{
 		System.out.println("What would you like to do?");
-		System.out.println("[1] Start a new game");
-		System.out.println("[2] Load game");
+		System.out.println("[ 1 ] Start a new game");
+		System.out.println("[ 2 ] Load game");
 		userInt = input.nextInt();
 		if(userInt == 1)
 		{
@@ -222,8 +213,8 @@ public class Game
 		System.out.println("close attention to everything as something special may happen on certain days.");
 		System.out.println("Good luck, " + player.getPlayerName() + "!");
 		skipLine();
-		Item fuelItem = playerShip.getItem(0);
-		System.out.printf("Oh, and here's §%.2f (shards) and %d buckets of " + fuelItem.getName() + " to get you started.\n", player.getWallet(), player.checkFuel());
+		String fuelName = playerShip.getItem(0);
+		System.out.printf("Oh, and here's §%.2f (shards) and %d buckets of " + fuelName + " to get you started.\n", player.getWallet(), player.checkFuel());
 		skipLine();
 		System.out.println("The game will be automatically saved each day as " + "\"" + saveHere + "\".");
 		skipLine();
@@ -263,7 +254,7 @@ public class Game
 				wallet = fileInput.nextDouble();
 				player.addMoney(wallet);
 				//backpack
-				for(int i = 0; i < Inventory.MAXIMUM_ITEMS; i++)
+				for(int i = 0; i < maximumItems; i++)
 				{
 					newStock = fileInput.nextInt();
 					current = player.getItem(i);
@@ -273,8 +264,10 @@ public class Game
 				fuel = fileInput.nextInt();
 				lotteryJackpot = fileInput.nextDouble();
 				lotteryCount = fileInput.nextInt();
+				String currentPlanetName = fileInput.next();
 				playerShip.setName(shipName);
 				playerShip.addFuel(fuel);
+				currentPlanet.setPlanetName(currentPlanetName);
 			}
 			fileInput.close();
 		}
@@ -286,8 +279,8 @@ public class Game
 	}//end of loadGame
 	
 	/*
-		asks the user if they want to begin
-		prevents the user from entering anything but a form of yes
+		- asks the user if they want to begin
+		- prevents the user from entering anything but a form of yes
 	*/
 	public void beginPrompt()
 	{
@@ -320,23 +313,6 @@ public class Game
 	public void firstDay()
 	{
 		setMarketStockAndPrice();
-		print("_", 117, true, " ", "front"); 
-		System.out.printf("| Current Day: %d", day);
-		//format bar according to the number of days
-		if(day < 10)
-		{
-			print(" ", 102, true, "|", "back");
-		}
-		else if(day >= 10 && day < 100)
-		{
-			print(" ", 101, true, "|", "back");
-		}
-		else if(day >= 100)
-		{
-			print(" ", 100, true, "|", "back");
-		}
-		print("‾", 117, true, " ", "front");
-		System.out.println("The items for sale today are:");
 		printMarketAndPlayerInfo();
 		dailyMenu();
 		saveGame();
@@ -348,105 +324,106 @@ public class Game
 	*/
 	public void printMarketAndPlayerInfo()
 	{
+		maximumItems = spaceMarket.getSize();
+		print("_", FULL_LINE - 2, true, " ", "front"); 
+		currentString = "| Current Day: " + day;
+		while (currentString.length() < 62)
+		{
+			currentString = currentString + " " ;
+		}
+		String planetNameString = "Current Planet: " + currentPlanet.getPlanetName() + " |";
+		while(planetNameString.length() < 64)
+		{
+			planetNameString = " " + planetNameString;
+		}
+		System.out.println(currentString + planetNameString);
+		print("‾", FULL_LINE - 2, true, " ", "front");
 		printHeader();
 		
-		for(int i = 0; i < Inventory.MAXIMUM_ITEMS; i++)
+		for(int i = 0; i < maximumItems; i++)
 		{
 			//----market info
 			Item current = spaceMarket.getItem(i);
+			//print index formatted with brackets
+			String indexString = "" + i;
+			System.out.print(" [");
+			
+			if(indexString.length() == 1)
+			{
+				indexString = " " + indexString + " ";
+			}
+			else if(indexString.length() == 2)
+			{
+				indexString = " " + indexString;
+			}
+			
+			System.out.print(indexString);
+			System.out.print("] ");
 			
 			//provide appropriate space between name and price
-			if(current == randomItem1 || current == randomItem2 || current == randomItem3 ||current == randomItem4 ||current == randomItem5)
+			String newName = current.getName();
+			
+			while(newName.length() < 29)
 			{
-				String indexString = " [" + i + "] ";
-				
-				if(indexString.length() == 7)
-				{
-					indexString = "" + indexString;
-				}
-				else if(indexString.length() == 6)
-				{
-					indexString = " " + indexString;
-				}
-				else if(indexString.length() == 5)
-				{
-					indexString = "  " + indexString;
-				}
-				System.out.print(indexString);
-				
-				if(current.getName().length() < 30)
-				{
-					String newName = current.getName();
-					int additionalCharacters = 30 - newName.length();
-					
-					while(newName.length() < 30)
-					{
-						newName = newName + " ";
-					}
-					System.out.print(newName);
-				}
-				
-				//print appropriate spaces after § symbol
-				System.out.print("§");
-				
-				if (current.getPrice() < 10000 && current.getPrice() >= 1000)
-				{
-					System.out.print(" ");
-				}
-				else if (current.getPrice() < 1000 && current.getPrice() >= 100)
-				{
-					System.out.print("  ");
-				}
-				else if (current.getPrice() < 100 && current.getPrice() >= 10)
-				{
-					System.out.print("   ");
-				}
-				else if (current.getPrice() < 10 && current.getPrice() >= 1)
-				{
-					System.out.print("    ");
-				}
-				System.out.printf("%.2f ", current.getPrice());
-				
-				//print appropriate space before stock
-				int currentStock = current.getStock();
-				String stockString = Integer.toString(currentStock);
-				
-				while(stockString.length() < 21)
-				{
-					stockString = " " + stockString;
-				}
-				
-				System.out.print(stockString + "           ");
+				newName = newName + " ";
 			}
-			else
+			System.out.print(newName);
+			
+			//print appropriate spaces after § symbol
+			System.out.print("§");
+			String priceSpacer = " ";
+			if (current.getPrice() < 10000 && current.getPrice() >= 1000)
 			{
-				print(" ", 79, false, "", "none");
+				System.out.print(" ");
 			}
-						
+			else if (current.getPrice() < 1000 && current.getPrice() >= 100)
+			{
+				System.out.print("  ");
+			}
+			else if (current.getPrice() < 100 && current.getPrice() >= 10)
+			{
+				System.out.print("   ");
+			}
+			else if (current.getPrice() < 10 && current.getPrice() >= 1)
+			{
+				System.out.print("    ");
+			}
+			System.out.printf("%.2f ", current.getPrice());
+			
+			//print appropriate space before stock
+			int currentStock = current.getStock();
+			String stockString = Integer.toString(currentStock);
+			
+			while(stockString.length() < 22)
+			{
+				stockString = " " + stockString;
+			}
+			
+			System.out.print(stockString + "           ");
+			
 			//----player backpack
 			current = player.getItem(i);
 			if(current.getStock() != 0)
 			{	
-				String indexString = " [" + i + "] ";
+				indexString = "" + i;
+				System.out.print("        [");
 				
-				if(indexString.length() == 7)
+				if(indexString.length() == 1)
 				{
-					indexString = "" + indexString;
+					indexString = " " + indexString + " ";
 				}
-				else if(indexString.length() == 6)
+				else if(indexString.length() == 2)
 				{
 					indexString = " " + indexString;
 				}
-				else if(indexString.length() == 5)
-				{
-					indexString = "  " + indexString;
-				}
+				
 				System.out.print(indexString);
+				System.out.print("] ");
 				
 				//print appropriate spaces after item name
 				if(current.getName().length() < 27)
 				{
-					String newName = current.getName();
+					newName = current.getName();
 					int additionalCharacters = 27 - newName.length();
 					
 					while(newName.length() < 27)
@@ -455,27 +432,48 @@ public class Game
 					}
 					System.out.print(newName);
 				}
-				
 				//print appropriate space before stock
-				int currentStock = current.getStock();
-				String stockString = Integer.toString(currentStock);
+				currentStock = current.getStock();
+				stockString = Integer.toString(currentStock);
 				while(stockString.length() < 4)
 				{
 					stockString = " " + stockString;
 				}
-				
 				System.out.print(stockString);
 			}
-			System.out.println();
+			skipLine();
 		}
+		skipLine();
+		
 		Item fuelItem = fuelStation.getItem(0);
 		skipLine();
-		print(" ", 79, false, "Wallet: ", "back");
+		System.out.printf("       Rocket Fuel ");
+		System.out.print("                 §");
+			
+		if (fuelItem.getPrice() < 10000 && fuelItem.getPrice() >= 1000)
+		{
+		System.out.print(" ");
+	}
+		else if (fuelItem.getPrice() < 1000 && fuelItem.getPrice() >= 100)
+		{
+		System.out.print("  ");
+	}
+		else if (fuelItem.getPrice() < 100 && fuelItem.getPrice() >= 10)
+		{
+		System.out.print("   ");
+	}
+		else if (fuelItem.getPrice() < 10 && fuelItem.getPrice() >= 1)
+		{
+		System.out.print("    ");
+	}
+		System.out.printf("%.2f ", fuelItem.getPrice());
+		//System.out.printf("       fuel: %d price: %.2f", fuelItem.getStock(), fuelItem.getPrice());
+		print(" ", 33, false, "Wallet: ", "back");
 		System.out.printf("§%.2f\n", player.getWallet());
 		int shipLength = playerShip.getName().length();
 		shipLength = 78 - shipLength;
 		print(" ", shipLength, false, "", "none");
-		System.out.print(playerShip.getName() + "'s Fuel: " + playerShip.checkFuel() + "\n");
+		System.out.print(playerShip.getName() + "'s Fuel: " + playerShip.checkFuel() + "b\n");
 	}//end of printMarketAndPlayerInfo
 	
 	/*
@@ -492,33 +490,24 @@ public class Game
 		
 		double playerWallet = player.getWallet();
 		
-		System.out.println();
 		System.out.println("What would you like to do today, " + player.getPlayerName() + "?");
-		System.out.println();
-		System.out.println(" [0]  Skip this day");
-		System.out.println(" [1]  Buy items");
-		System.out.println(" [2]  Sell items");
-		System.out.println(" [3]  Buy fuel");
+		print("-", FULL_LINE, true,"", "none");
+		System.out.println("[ 0 ]  Skip this day");
+		System.out.println("[ 1 ]  Buy items");
+		System.out.println("[ 2 ]  Sell items");
+		System.out.println("[ 3 ]  Buy fuel");
+		System.out.println("[ 4 ]  Visit Planet");
+		
 		if(day % 9 == 0)
 		{
-			System.out.println(" [9]  Play the lottery (§1 to play)");
+			System.out.println("[ 9 ]  Play the lottery (§1 to play)");
 		}
-		System.out.println("[999] Quit game");
+		System.out.println("[999]  Quit game");
 		userInt = input.nextInt();
-		
-		//check if the user can buy the item 
-		for(int i = 0; i < Inventory.MAXIMUM_RANDOM_ITEMS; i++)
-		{
-			marketItem = randomItems[i];
-			if (marketItem.getPrice() > player.getWallet())
-			{
-				buyCount++;
-			}
-		}
 		
 		//check if the user can sell an item
 		boolean canSell = false;
-		for(int i = 0; i < Inventory.MAXIMUM_ITEMS; i++)
+		for(int i = 0; i < maximumItems; i++)
 		{
 			playerItem = player.getItem(i);
 			
@@ -526,32 +515,22 @@ public class Game
 			{
 				if(playerItem.getStock() > 0)
 				{
-					if (playerItem.getName() == randomItem1.getName())
-					{
-						canSell = true;
-					}
-					else if(playerItem.getName() == randomItem2.getName())
-					{
-						canSell = true;
-					}
-					else if(playerItem.getName() == randomItem3.getName())
-					{
-						canSell = true;
-					}
-					else if(playerItem.getName() == randomItem4.getName())
-					{
-						canSell = true;
-					}
-					else if(playerItem.getName() == randomItem5.getName())
-					{
-						canSell = true;
-					}
+					canSell = true;
 				}
 				else
 				{
 					canSell = false;
 				}
 			}
+		}
+		
+		//check if the user can buy fuel
+		Item fuelItem = fuelStation.getItem(0);
+		double fuelPrice = fuelItem.getPrice();
+		if(playerWallet < fuelItem.getPrice() && userInt == 3)
+		{
+			System.out.println("You don't have enough shards to buy fuel... Hopefully you're not stranded.");
+			dailyMenu();
 		}
 		
 		//check if the user can play the lottery
@@ -572,12 +551,12 @@ public class Game
 			//do nothing but increment day, which happens in dailyMessage()
 		}
 		//----user can buy an item
-		else if(userInt == 1 && buyCount < 5)
+		else if(userInt == 1)
 		{
 			buyItem();
 		}
 		//----user can't buy an item
-		else if(userInt == 1 && buyCount == 5)
+		else if(userInt == 1)
 		{
 			System.out.println("You don't have enough shards to buy anything today. Try something else.");
 			dailyMenu();
@@ -594,9 +573,30 @@ public class Game
 			dailyMenu();
 		}
 		//----buy fuel
-		else if(userInt == 3)
+		else if(userInt == 3 && player.getWallet() >= fuelStation.getItem(0).getPrice())
 		{
 			buyFuel();
+		}
+		//----user can't buy fuel
+		else if(userInt == 3 && player.getWallet() < fuelStation.getItem(0).getPrice())
+		{
+			System.out.println("You can't afford fuel today. Try something else.");
+			dailyMenu();
+		}
+		//----visit planet
+		else if(userInt == 4 && (playerShip.checkFuel() >= volcanus.getTripCost()))
+		{
+			visitPlanetPrompt();
+		}
+		else if(userInt == 4 && (playerShip.checkFuel() >= iceCave.getTripCost()))
+		{
+			visitPlanetPrompt();
+		}
+		//----user can't visit planet
+		else if(userInt == 4 && (playerShip.checkFuel() < iceCave.getTripCost()))
+		{
+			System.out.println("You don't have enough fuel to travel right now");
+			dailyMenu();
 		}
 		//----lottery
 		else if(userInt == 9 && playerWallet >= 1)
@@ -622,18 +622,32 @@ public class Game
 	public void buyFuel()
 	{
 		Item fuelItem = fuelStation.getItem(0);
-		print("_", FULL_LINE, true, " ", "front");
-		print(" ", 44, false, "|", "front");
-		print("Welcome to theStationOfFuel", 1, false, "", "none");
-		print(" ", 46, true, "|", "back");
-		print("‾", FULL_LINE, true, " ", "front");
-		System.out.print("   fuel: " + fuelItem.getStock());
-		System.out.printf(" price: %.2f\n",fuelItem.getPrice());
+		///////////////////////////////////////////////////////////////////// WORK ON THIS
+		//format printing to make a text version of a "GUI"
+		print("_", 68, false, " ", "front");
+		print("_", 38, true, "                  ", "front");
+		print(" ", 27, false, "|", "front");
+		System.out.print(" Pump 'n Run  ");
+		print(" ", 27, false, "|", "back");
+		print(" ", 15, false, "                |", "front");
+		System.out.print("Backpack");
+		print(" ", 15, true, "|", "back");
+		print("‾", 68, false, "|", "front and back");
+		System.out.print("                ");
+		print("‾", 38, true, "|", "front and back");
+		print("Item", 1, false, "| ", "front");
+		print(" ", 30, false, "Price (§)", "back");
+		print(" ", 18, false, "Stock |", "back");
+		print(" ", 16, false, "| Item", "back");
+		print(" ", 27, true, "Stock |", "back");
+		print("‾", 68, false, " ", "front");
+		print("‾", 38, true, "                  ", "front");
+		
 		System.out.println("How many buckets of " + fuelItem.getName() + " would you like to buy?");
 		userSelection = input.nextInt();
 		double price = fuelItem.getPrice() * userSelection;
 		
-		while(player.getWallet() < price)
+		if(player.getWallet() < price)
 		{
 			System.out.println("I'm sorry but you don't have enough money.");
 			buyFuel();
@@ -664,21 +678,11 @@ public class Game
 		System.out.println("Which item would you like to buy?");
 		userSelection = input.nextInt();
 		
-		
-		while(userSelection > Inventory.MAXIMUM_ITEMS)
-		{
-			System.out.println("That item does not exist. Please pick one of the items for sale.");
-			//prompt user for which item they would like to purchase
-			System.out.println("Which item would you like to buy?");
-			userSelection = input.nextInt();
-		}
-		
-		//create a temporary item to test if the user choice is in stock
 		tempItem = spaceMarket.getItem(userSelection);
 		
-		while(tempItem != randomItem1 && tempItem != randomItem2 && tempItem != randomItem3 && tempItem != randomItem4 && tempItem != randomItem5)
+		while(userSelection > maximumItems)
 		{
-			System.out.println("That item is not for sale today, " + player.getPlayerName() + ".");
+			System.out.println("That item does not exist. Please pick one of the items for sale.");
 			//prompt user for which item they would like to purchase
 			System.out.println("Which item would you like to buy?");
 			userSelection = input.nextInt();
@@ -686,13 +690,6 @@ public class Game
 		}
 		
 		//check if choice is valid
-		//----stock choice is not high enough
-		while(tempItem.getStock() < 1)
-		{
-			System.out.println("We currently do not have enough of that item in stock...");
-			System.out.println("Please choose another item.");
-			userSelection = input.nextInt();
-		}
 		
 		//----price is too expensive
 		while(tempItem.getPrice() > playerWallet)
@@ -769,7 +766,7 @@ public class Game
 		System.out.println("Which item would you like to sell?");
 		userSelection = input.nextInt();
 		
-		while(userSelection > Inventory.MAXIMUM_ITEMS)
+		while(userSelection > maximumItems)
 		{
 			System.out.println("That item does not exist. Please pick one of the items that is actually for sale.");
 			//prompt user for which item they would like to sell
@@ -821,13 +818,137 @@ public class Game
 	}//end of sellItem
 	
 	/*
+		Allows the user to visit a planet
+		----should list planets
+		----charge fuel
+		----should not be allowed if user has no fuel
+	*/
+	public void visitPlanetPrompt()
+	{
+		System.out.println("\nWhich planet would you like to travel to?");
+		print("-", FULL_LINE, true,"", "none");
+		
+		System.out.println("Planets:");
+		int listLength = planets.getSize();
+		
+		for(int i = 0; i < listLength; i++)
+		{
+			System.out.print("[ " + i + " ] ");
+			String tempName = planets.getPlanet(i).getPlanetName() + " (Uses " + planets.getPlanet(i).getTripCost() + "b of Rocket Fuel)";
+			System.out.println(tempName);
+		}
+		planetInt = input.nextInt();
+		
+		String tempName = planets.getPlanet(planetInt).getPlanetName();
+		int tempTripCost = planets.getPlanet(planetInt).getTripCost();
+		boolean notEnoughFuel = (player.checkFuel() - tempTripCost) < 0;
+			
+		if(notEnoughFuel == true)
+		{
+			System.out.println("I'm sorry, but you don't have enough fuel to go there.");
+			visitPlanetPrompt();
+		}
+		else if(notEnoughFuel == false)
+		{
+			playerShip.useFuel(tempTripCost);
+			currentPlanet = planets.getPlanet(planetInt);	
+			landedOnPlanet();
+		}
+	}//end of visitPlanetPrompt
+	
+	/*
+		Check if the user is finished with whatever they were doing
+	*/
+	public void finishedPrompt()
+	{
+		System.out.println("Are you all set?");
+		print("-", FULL_LINE, true,"", "none");
+		System.out.println("[ 0 ] Yes");
+		System.out.println("[ 1 ] No");
+		userInt = input.nextInt();
+	}//end of finishedPrompt
+	
+	/*
+		Menu and options when a player lands on a planet
+	*/
+	public void landedOnPlanet()
+	{
+		int subMenu;
+		System.out.println("\nWhat would you like to do while you're here?");
+		print("-", FULL_LINE, true,"", "none");
+		System.out.println("[ 0 ] Get planet info.");
+		System.out.println("[ 1 ] Fight an enemy.");
+		System.out.println("[ 2 ] Explore for items.");
+		System.out.println("[ 9 ] Go back to Headquarters");
+		subMenu = input.nextInt();
+		if(subMenu == 0)
+		{
+			//print planet info
+			String tempString = planets.getPlanet(planetInt).getPlanetInfo();
+			System.out.println(tempString);
+			finishedPrompt();
+			if(userInt == 0)
+			{
+				landedOnPlanet();
+			}
+			else if(userInt == 1)
+			{
+				finishedPrompt();
+				resetCurrentPlanet();
+			}
+		}
+		else if(subMenu == 1)
+		{
+			fightEnemy();
+			resetCurrentPlanet();
+		}
+		else if(subMenu == 2)
+		{
+			Item tempItem = currentPlanet.getUniqueItem();
+			int randInt = randomInt(1, 25);
+			tempItem.setStock(randInt);
+			System.out.println("You search the planet thoroughly, avoid numerous attacks and manage to escape with " + randInt + " " + tempItem.getName() + "s. \n");			
+			finishedPrompt();
+			addItem(tempItem);
+			setMarketStockAndPrice();
+			resetCurrentPlanet();
+		}
+		else if(subMenu == 9)
+		{
+			resetCurrentPlanet();
+			//----charge fuel
+			//----make the user get stranded if they don't have enough fuel
+			//----allow the user to buy fuel if they are stranded
+		}
+	}//end of landedOnPlanet
+	
+	/*
+		adds item to player and market
+		pre: requires an Item to add
+		pre: requires an int for the stock of the Player's Item
+	*/
+	public void addItem(Item tempItem)
+	{
+		player.addPlayerItem(tempItem);
+		spaceMarket.addItem(tempItem);
+	}//end of addItem
+	
+	/*
+		changes the current planet to HQ
+	*/
+	public void resetCurrentPlanet()
+	{
+		currentPlanet.setPlanetName("HQ");
+	}//end of resetCurrentPlanet
+	
+	/*
 		outputs a message for the user when they quit and tells them how they did.
 	*/
 	public void quitGame()
 	{
 		Item current;
 		skipLine();
-		print("*", 119, true, "", "none");
+		print("*", FULL_LINE, true, "", "none");
 		if (player.getWallet() > 20)
 		{
 			double profit = player.getWallet() - 20;
@@ -850,34 +971,33 @@ public class Game
 		System.out.println("| Item                           Stock |");
 		System.out.println(" ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾");
 		
-		for(int i = 0; i < Inventory.MAXIMUM_ITEMS; i++)
+		for(int i = 0; i < maximumItems; i++)
 		{
 			current = player.getItem(i);
 			if(current.getStock() != 0)
 			{	
-				String indexString = " [" + i + "] ";
+				String indexString = "" + i;
+				System.out.print(" [");
 				
-				if(indexString.length() == 7)
+				if(indexString.length() == 1)
 				{
-					indexString = "" + indexString;
+					indexString = " " + indexString + " ";
 				}
-				else if(indexString.length() == 6)
+				else if(indexString.length() == 2)
 				{
 					indexString = " " + indexString;
 				}
-				else if(indexString.length() == 5)
-				{
-					indexString = "  " + indexString;
-				}
+				
 				System.out.print(indexString);
+				System.out.print("] ");
 				
 				//print appropriate spaces after item name
-				if(current.getName().length() < 27)
+				if(current.getName().length() < 28)
 				{
 					String newName = current.getName();
-					int additionalCharacters = 27 - newName.length();
+					int additionalCharacters = 28 - newName.length();
 					
-					while(newName.length() < 27)
+					while(newName.length() < 28)
 					{
 						newName = newName + " ";
 					}
@@ -913,11 +1033,11 @@ public class Game
 			fileOutput.println(player.getPlayerName());
 			fileOutput.println(day);
 			fileOutput.printf("%.2f\n", player.getWallet());
-			for(int i = 0; i < Inventory.MAXIMUM_ITEMS; i++)
+			for(int i = 0; i < maximumItems; i++)
 			{
 				Item current = player.getItem(i);
 				
-				if(i < Inventory.MAXIMUM_ITEMS - 1)
+				if(i < maximumItems - 1)
 				{
 					fileOutput.println(current.getStock());
 				}
@@ -930,7 +1050,8 @@ public class Game
 			fileOutput.println(playerShip.getName());
 			fileOutput.println(player.checkFuel());
 			fileOutput.println(lotteryJackpot);
-			fileOutput.print(lotteryCount);
+			fileOutput.println(lotteryCount);
+			fileOutput.print(currentPlanet.getPlanetName());
 			fileOutput.close();
 		}
 		catch(IOException exception)
@@ -948,27 +1069,12 @@ public class Game
 		{
 			day++;
 			setMarketStockAndPrice();
-			print("_", 117, true, " ", "front"); 
-			System.out.printf("| Current Day: %d", day);
-			//format bar according to the number of days
-			if(day < 10)
-			{
-				print(" ", 102, true, "|", "back");
-			}
-			else if(day >= 10 && day < 100)
-			{
-				print(" ", 101, true, "|", "back");
-			}
-			else if(day >= 100)
-			{
-				print(" ", 100, true, "|", "back");
-			}
-			print("‾", 117, true, " ", "front");System.out.println("The items for sale today are:");
 			printMarketAndPlayerInfo();
 			dailyMenu();
+			maximumItems = player.getBackpackSize();
 			saveGame();
 		}
-}//end of dailyMessage
+	}//end of dailyMessage
 
 	/*
 		lottery that shows up every 9 days
@@ -977,34 +1083,37 @@ public class Game
 	{
 		int magicNumber = randomInt(1, 10);
 		player.removeMoney(1);
-		
-		print("*", 119, true, "", "none");
-		print(" ", 117, true, "*", "front and back");
-		System.out.println("*                                    *       **   *****  *****  *****  ***   *   *                                    *");
-		System.out.println("*                                    *      *  *    *      *    *      *  *   * *                                     *");
-		System.out.println("*                                    *      *  *    *      *    ***    ***     *                                      *");
-		System.out.println("*                                    *      *  *    *      *    *      *  *    *                                      *");
-		System.out.println("*                                    *****   **     *      *    *****  *   *   *                                      *");
-		print(" ", 117, true, "*", "front and back");
-		print("*", 119, true, "", "none");
+		skipLine();
+		print("*", FULL_LINE, true, "", "none");
+		print(" ", FULL_LINE - 2, true, "*", "front and back");
+		System.out.println("*                                       *       **   *****  *****  *****  ***   *   *                                        *");
+		System.out.println("*                                       *      *  *    *      *    *      *  *   * *                                         *");
+		System.out.println("*                                       *      *  *    *      *    ***    ***     *                                          *");
+		System.out.println("*                                       *      *  *    *      *    *      *  *    *                                          *");
+		System.out.println("*                                       *****   **     *      *    *****  *   *   *                                          *");
+		print(" ", FULL_LINE - 2 , true, "*", "front and back");
+		print("*", FULL_LINE, true, "", "none");
 		skipLine();
 		System.out.printf("The current jackpot is §%.2f\n", lotteryJackpot);		
 		skipLine();
 		System.out.println("What do you think the magic number is today?");
+		print("-", FULL_LINE, true,"", "none");
 		System.out.println("(Choose a number between 1 and 10 inclusively)");
 		userInt = input.nextInt();
 		if(userInt == magicNumber)
 		{
-			System.out.printf("Congratulations!! You won §%.2f!!\n", lotteryJackpot);
+			System.out.printf("\nCongratulations!! You won §%.2f!!\n", lotteryJackpot);
 			player.addMoney(lotteryJackpot);
 			lotteryJackpot = LOTTERY_MIN_JACKPOT;
 			lotteryCount = LOTTERY_RESET;
+			finishedPrompt();
 		}
 		else if(userInt != magicNumber)
 		{
-			System.out.println("I'm sorry, you didn't win. Try again sometime.");
+			System.out.println("\nI'm sorry, you didn't win. Try again sometime.");
 			lotteryCount++;
 			lotteryJackpot = lotteryJackpot * lotteryCount;
+			finishedPrompt();
 		}
 		else if(userInt < LOTTERY_MIN_NUM)
 		{
@@ -1017,6 +1126,138 @@ public class Game
 			lottery();
 		}
 	}//end of lottery
+	
+	/*
+		allows the Player to fight a random Enemy on the Planet they are currently on
+	*/
+	public void fightEnemy()
+	{
+		tempEnemy = planets.getPlanet(planetInt).getEnemy();
+		System.out.println("You are about to fight a " + tempEnemy.getName() + ".");
+		System.out.println("You will now do a coin toss to see who goes first.");
+		System.out.println("Please pick either side 1 or side 2 (Enter just the number)");
+		int winningSide = randomInt(1, 2);
+		int userSide = input.nextInt();
+		while(userSide > 2 || userSide < 1)
+		{
+			System.out.println("Invalid entry. Please try again.");
+		}
+		if (userSide == winningSide)
+		{
+			System.out.println("You will go first.");
+			while(player.getPlayerHealth() > 0 && tempEnemy.getHealth() > 0)
+			{
+				healthBanner();
+				int damagePoints = playerAttack();
+				System.out.println(tempEnemy.getName() + " recevied " + damagePoints + " points of damage." + "\n");
+				tempEnemy.removeHealth(damagePoints);
+				if (tempEnemy.getHealth() > 0)
+				{
+					damagePoints = enemyAttack();
+					System.out.println("You received " + damagePoints + " points of damage." + "\n");
+					player.removeHealth(damagePoints);
+				}
+			}
+		}
+		else if(userSide != winningSide)
+		{
+			System.out.println("You lost the coin toss. " + tempEnemy.getName() + " will go first.");
+			while(player.getPlayerHealth() > 0 && tempEnemy.getHealth() > 0)
+			{
+				healthBanner();
+				int damagePoints = enemyAttack();
+				System.out.println("You received " + damagePoints + " points of damage." + "\n");
+				player.removeHealth(damagePoints);
+				if(player.getPlayerHealth() > 0)
+				{
+					damagePoints = playerAttack();
+					System.out.println(tempEnemy.getName() + " recevied " + damagePoints + " points of damage." + "\n");
+					tempEnemy.removeHealth(damagePoints);
+				}
+			}
+		}
+	}//end of fightEnemy
+	
+	/*
+		shows the Player's health and the Enemy's health
+	*/
+	public void healthBanner()
+	{
+		print("_", FULL_LINE - 2, true, " ", "front");
+		String enemyBanner = "| " + tempEnemy.getName() + "'s Health: " + tempEnemy.getHealth();
+		while(enemyBanner.length() < 63)
+		{
+			enemyBanner = enemyBanner + " ";
+		}
+		String playerBanner= player.getPlayerName() + "'s Health: " + player.getPlayerHealth() + " |";
+		while(playerBanner.length() < 63)
+		{
+			playerBanner = " " + playerBanner;
+		}
+		System.out.println(enemyBanner + playerBanner);
+		print("‾", FULL_LINE - 2, true, " ", "front");
+	}//end of healthBanner
+	
+	/*
+		allows the user to atack
+		post: returns the damage points as an int
+	*/
+	public int playerAttack()
+	{
+		System.out.println("Which attack would you like to use?");
+		print("-", FULL_LINE, true,"", "none");
+		player.viewAttacks();
+		userInt = input.nextInt();
+		Attack tempAttack = player.getAttack(userInt);
+		System.out.println(player.getPlayerName() + " used " + tempAttack.getAttackName() + ".");
+		return tempAttack.getDamagePoints();
+	}//end of playerAttack
+	
+	/*
+		Allows the Enemy to attack
+		post: returns the damage points as an int
+	*/
+	public int enemyAttack()
+	{
+		Attack tempAttack = tempEnemy.useAttack();
+		int damage = tempAttack.getDamagePoints();
+		System.out.println(tempEnemy.getName() + " used " + tempAttack.getAttackName() + ".");
+		return damage;
+	}//end of enemyAttack
+	
+	/*
+		adds new planet with enemies and unique items
+	*/
+	public void addPlanets()
+	{
+		iceCave = new Planet("Ice Cave", 5);
+		volcanus = new Planet("Volcanus", 9);
+		//-----add everything to yeti
+		yeti.addAttack(spinKick);
+		yeti.addAttack(stomp);
+		yeti.addAttack(hammerPunch);
+		yeti.addAttack(bodySlam);
+		yeti.giveItem(yetiFur);
+		
+		//-----add everything to iceFang
+		iceFang.addAttack(chomp);
+		iceFang.addAttack(headButt);
+		iceFang.addAttack(scratch);
+		iceFang.addAttack(lick);
+		iceFang.giveItem(fangs);
+		//------add things to iceCave 
+		iceCave.addEnemy(yeti);
+		iceCave.addEnemy(iceFang);
+		iceCave.addUniqueItem(iceCube);
+		
+		//volcanus Enemies
+		Enemy flyingAnus = new Enemy("Flying Anus");
+		
+		planets.addPlanet(iceCave);
+		iceCave.addPlanetInfo("\nWelcome to iceCave!\nThis is actually not a planet...it's just a black hole that leads to some sort of cave that is completely covered in ice\n...obviously. You will find the occasional Yeti, but the cave is mostly overrun with Ice Fangs, which are literally just\nsnow bunnies...\n");
+		planets.addPlanet(volcanus);
+		volcanus.addPlanetInfo("\nWelcome to volcanus!\nThis planet has an atmosphere made up entirely of some kind of element that smells terrible. The scent could be coming\nfrom the abundance of Flying Anuses that cover the planet, but no one can really be sure... Anyways... Have fun.\n");
+	}//end of addPlanets
 
 	/*
 		prints the header for the market and player "GUI"
@@ -1025,23 +1266,23 @@ public class Game
 	{
 		//format printing to make a text version of a "GUI"
 		print("_", 68, false, " ", "front");
-		print("_", 38, true, "           ", "front");
+		print("_", 38, true, "                  ", "front");
 		print(" ", 27, false, "|", "front");
 		System.out.print("Ships 'n Stuff");
 		print(" ", 27, false, "|", "back");
-		print(" ", 15, false, "         |", "front");
+		print(" ", 15, false, "                |", "front");
 		System.out.print("Backpack");
 		print(" ", 15, true, "|", "back");
 		print("‾", 68, false, "|", "front and back");
-		System.out.print("         ");
+		System.out.print("                ");
 		print("‾", 38, true, "|", "front and back");
 		print("Item", 1, false, "| ", "front");
 		print(" ", 30, false, "Price (§)", "back");
 		print(" ", 18, false, "Stock |", "back");
-		print(" ", 9, false, "| Item", "back");
+		print(" ", 16, false, "| Item", "back");
 		print(" ", 27, true, "Stock |", "back");
 		print("‾", 68, false, " ", "front");
-		print("‾", 38, true, "           ", "front");
+		print("‾", 38, true, "                  ", "front");
 	}//end of printHeader
 	
 	/*
@@ -1126,5 +1367,5 @@ public class Game
 			symbolString = additionalString + symbolString + additionalString;
 		}
 		return symbolString;
-	}//end of printSymbol
-}
+	}//end of getSymbolString
+}//end of Game

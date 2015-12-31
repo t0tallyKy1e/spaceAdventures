@@ -9,12 +9,45 @@ import java.util.ArrayList;
 
 public class Inventory
 {
-	public static final int MAXIMUM_ITEMS = 11;
-	public static final int MAXIMUM_RANDOM_ITEMS = 5;
+	private int size = 11;
+ 	private ArrayList<Item> items = new ArrayList<Item>(size);
 	
-	private Item[] items = new Item[MAXIMUM_ITEMS];
+	private Item oxygenTanks = new Item("Portable Oxygen Tanks", 0);
+	private Item healthPacks = new Item("Health Packs", 0);
+	private Item alienRepellent = new Item("Alien Repellent", 0);
+	private Item humanRepellent = new Item("Human Repellent", 0);
+	private Item spaceTunes = new Item("Space Tunes", 0);
+	private Item spaceArmor = new Item("Space Armor", 0);
+	private Item blasterGuns = new Item("Blaster Guns", 0);
+	private Item roboShipCrew = new Item("Robo Crew Members", 0);
+	private Item shipRepairKits = new Item("Ship Repair Kits", 0);
+	private Item magicSpaceGrass = new Item("Magic Space Grass", 0);
+	private Item ships = new Item("Ships", 0);
 	
-	//no constructor needed since this class just handles the array of items
+	public void Inventory()
+	{
+		addItem(oxygenTanks);
+		addItem(healthPacks);
+		addItem(alienRepellent);
+		addItem(humanRepellent);
+		addItem(spaceTunes);
+		addItem(spaceArmor);
+		addItem(blasterGuns);
+		addItem(roboShipCrew);
+		addItem(shipRepairKits);
+		addItem(magicSpaceGrass);
+		addItem(ships);
+	}
+	
+	/*
+		adds an item to the array
+		pre: requires an Item to be added
+		pre: requires an int for the index of the Item
+	*/
+	public void addItem(Item item)
+	{
+		items.add(item);
+	}//end of addItem
 	
 	/*
 		gets an item
@@ -23,16 +56,15 @@ public class Inventory
 	*/
 	public Item getItem(int index)
 	{
-		return items[index];
+		return items.get(index);
 	}//end of getItem
 	
 	/*
-		adds an item to the array
-		pre: requires an Item to be added
-		pre: requires an int for the index of the Item
+		gets the size of the inventory
+		post: returns an int of the size
 	*/
-	public void addItem(Item item, int index)
+	public int getSize()
 	{
-		items[index] = item;
-	}//end of addItem
-}
+		return items.size();
+	}//end of getLength
+}//end of Inventory

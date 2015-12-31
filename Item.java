@@ -15,7 +15,7 @@ public class Item
 	private int stock;
 	private String name;
 	
-	private final int MINIMUM_STOCK = 1;
+	private final int MINIMUM_STOCK = 0;
 	private final int MAXIMUM_STOCK = 100;
 	
 	/*
@@ -34,7 +34,7 @@ public class Item
 		//generate price and stock
 		price = getPrice();
 		stock = getStock();
-	}//end of Market Item constructor
+	}//end of Market Item constructor #1
 	
 	/*
 		Item Constructor (Stock)
@@ -46,7 +46,15 @@ public class Item
 	{
 		name = itemName;
 		this.stock = stock;
-	}//end of Stock Item constructor
+	}//end of Stock Item constructor #2
+	
+	/*
+		pre: requires an Item name as a String
+	*/
+	public Item(String itemName)
+	{
+		name = itemName;
+	}//end of Item constructor #3
 	
 	/*
 		gets name of item
@@ -67,6 +75,33 @@ public class Item
 	}//end of setPrice
 	
 	/*
+		sets the stock of an item
+		pre: requires an int for the new stock of the Item
+	*/
+	public void setStock(int newStock)
+	{
+		stock = newStock;
+	}//end of setStock
+	
+	/*
+		gets the price of an item
+		post: returns a double of the price
+	*/
+	public double getPrice()
+	{
+		return price;
+	}//end of getPrice
+	
+	/*
+		gets the stock of an item
+		post: returns the stock of the item as an int
+	*/
+	public int getStock()
+	{
+		return stock;
+	}//end of getStock
+	
+	/*
 		generates a random double for the price
 		post: returns an double for the random price
 	*/
@@ -81,24 +116,6 @@ public class Item
 	}//end of getRandomPrice
 	
 	/*
-		gets the price of an item
-		post: returns a double of the price
-	*/
-	public double getPrice()
-	{
-		return price;
-	}//end of getPrice
-	
-	/*
-		sets the stock of an item
-		pre: requires an int for the new stock of the Item
-	*/
-	public void setStock(int newStock)
-	{
-		stock = newStock;
-	}//end of setStock
-	
-	/*
 		generates a random int for the stock
 		post: returns an int for the random number
 	*/
@@ -111,13 +128,4 @@ public class Item
 	
 		return randomStock;
 	}//end of getRandomStock
-	
-	/*
-		gets the stock of an item
-		post: returns the stock of the item as an int
-	*/
-	public int getStock()
-	{
-		return stock;
-	}//end of getStock
-}
+}//end of Item

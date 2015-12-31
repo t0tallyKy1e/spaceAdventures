@@ -13,23 +13,14 @@ public class Player extends Market
 	
 	private Inventory backpack = new Inventory();
 	
-	private Item oxygenTanks = new Item("Portable Oxygen Tanks", 0);
-	private Item healthPacks = new Item("Health Packs", 0);
-	private Item alienRepellent = new Item("Alien Repellent", 0);
-	private Item humanRepellent = new Item("Human Repellent", 0);
-	private Item spaceTunes = new Item("Space Tunes", 0);
-	private Item spaceArmor = new Item("Space Armor", 0);
-	private Item blasterGuns = new Item("Blaster Guns", 0);
-	private Item roboShipCrew = new Item("Robo Crew Members", 0);
-	private Item shipRepairKits = new Item("Ship Repair Kits", 0);
-	private Item magicSpaceGrass = new Item("Magic Space Grass", 0);
-	private Item ships = new Item("Ships", 0);
-	
 	public Ship playerShip = new Ship();
 	
 	private double playerWallet;
 	private int fuelTank = playerShip.checkFuel();
+	private AttackList attacks = new AttackList();
+	
 	private String playerName;
+	private int playerHealth;
 	
 	private String userString;
 	private int userInt;
@@ -45,18 +36,7 @@ public class Player extends Market
 	{
 		playerName = "Captain ";
 		playerWallet = 0.0;
-		
-		backpack.addItem(oxygenTanks, 0);
-		backpack.addItem(healthPacks, 1);
-		backpack.addItem(alienRepellent, 2);
-		backpack.addItem(humanRepellent, 3);
-		backpack.addItem(spaceTunes, 4);
-		backpack.addItem(spaceArmor, 5);
-		backpack.addItem(blasterGuns, 6);
-		backpack.addItem(roboShipCrew, 7);
-		backpack.addItem(shipRepairKits, 8);
-		backpack.addItem(magicSpaceGrass, 9);
-		backpack.addItem(ships, 10);
+		playerHealth = 100;
 	}//end of Player Constructor
 	
 	/*
@@ -116,6 +96,15 @@ public class Player extends Market
 	}//end of addFuel
 	
 	/*
+		removes fuel from the player's ship
+		pre: requires an int of fuel to remove
+	*/
+	public void useFuel(int fuel)
+	{
+		playerShip.useFuel(fuel);
+	}//end of useFuel
+	
+	/*
 		checks the fuel of the player's ship
 		post: returns an integer of the ship's fuel
 	*/
@@ -132,4 +121,69 @@ public class Player extends Market
 	{
 		return playerShip;
 	}//end of getShip
-}
+	
+	/*
+		post: return the Player's health as an int
+	*/
+	public int getPlayerHealth()
+	{
+		return playerHealth;
+	}//end of getPlayerHealth
+	
+	/*
+		adds attacks to the player's AttackList
+		pre: requires an Attack to add to the AttackList
+	*/
+	public void addAttack(Attack tempAttack)
+	{
+		attacks.addAttack(tempAttack);
+	}//end of addAttack
+	
+	/*
+		allows the Player to use a certain Attack
+		pre: requires an int for the index of the Attack
+		post: returns an Attack that the Player chooses
+	*/
+	public Attack getAttack(int index)
+	{
+		return attacks.getAttack(index);
+	}//end of getAttack
+	
+	/*
+		Allows the Player to view all of their attacks
+	*/
+	public void viewAttacks()
+	{
+		for(int i = 0; i < attacks.getSize(); i++)
+		{
+			System.out.println("[ " + i + " ] " + attacks.getAttack(i).getAttackName());
+		}
+	}//end of viewAttacks
+	
+	/*
+		allows the Player to be damaged
+		pre: requires an int for the amount of damage done
+	*/
+	public void removeHealth(int damage)
+	{
+		playerHealth = playerHealth - damage;
+	}//end of removeHealth
+	
+	/*
+		adds an Item to the Player's backpack
+		pre: requires an Item to give to the player
+		pre: requires an int for the stock
+	*/
+	public void addPlayerItem(Item tempItem)
+	{
+		backpack.addItem(tempItem);
+	}//end of addPlayerItem
+	
+	/*
+		post: returns int of the backpack's size
+	*/
+	public int getBackpackSize()
+	{
+		return backpack.getSize();
+	}//end of getBackpackSize
+}//end of Player
