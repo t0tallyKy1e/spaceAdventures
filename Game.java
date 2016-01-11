@@ -446,32 +446,11 @@ public class Game
 		skipLine();
 		
 		Item fuelItem = fuelStation.getItem(0);
-		skipLine();
-		System.out.printf("       Rocket Fuel ");
-		System.out.print("                 §");
-			
-		if (fuelItem.getPrice() < 10000 && fuelItem.getPrice() >= 1000)
-		{
-		System.out.print(" ");
-	}
-		else if (fuelItem.getPrice() < 1000 && fuelItem.getPrice() >= 100)
-		{
-		System.out.print("  ");
-	}
-		else if (fuelItem.getPrice() < 100 && fuelItem.getPrice() >= 10)
-		{
-		System.out.print("   ");
-	}
-		else if (fuelItem.getPrice() < 10 && fuelItem.getPrice() >= 1)
-		{
-		System.out.print("    ");
-	}
-		System.out.printf("%.2f ", fuelItem.getPrice());
-		//System.out.printf("       fuel: %d price: %.2f", fuelItem.getStock(), fuelItem.getPrice());
-		print(" ", 33, false, "Wallet: ", "back");
+		
+		print(" ", 80, false, "Wallet: ", "back");
 		System.out.printf("§%.2f\n", player.getWallet());
 		int shipLength = playerShip.getName().length();
-		shipLength = 78 - shipLength;
+		shipLength = 79 - shipLength;
 		print(" ", shipLength, false, "", "none");
 		System.out.print(playerShip.getName() + "'s Fuel: " + playerShip.checkFuel() + "b\n");
 	}//end of printMarketAndPlayerInfo
@@ -622,6 +601,7 @@ public class Game
 	public void buyFuel()
 	{
 		Item fuelItem = fuelStation.getItem(0);
+		
 		///////////////////////////////////////////////////////////////////// WORK ON THIS
 		//format printing to make a text version of a "GUI"
 		print("_", 68, false, " ", "front");
@@ -642,6 +622,87 @@ public class Game
 		print(" ", 27, true, "Stock |", "back");
 		print("‾", 68, false, " ", "front");
 		print("‾", 38, true, "                  ", "front");
+		
+		System.out.print("  Rocket Fuel ");
+		System.out.print("                      §");
+	
+		if (fuelItem.getPrice() < 10000 && fuelItem.getPrice() >= 1000){
+			System.out.print(" ");
+		}
+		else if (fuelItem.getPrice() < 1000 && fuelItem.getPrice() >= 100){
+			System.out.print("  ");
+		}
+		else if (fuelItem.getPrice() < 100 && fuelItem.getPrice() >= 10){
+			System.out.print("   ");
+		}
+		else if (fuelItem.getPrice() < 10 && fuelItem.getPrice() >= 1){
+			System.out.print("    ");
+		}
+		System.out.printf("%.2f ", fuelItem.getPrice());
+		System.out.print("                                 ");
+			
+			
+		for(int i = 0; i < maximumItems; i++)
+		{
+			if(i > 0){
+				System.out.print("                                                                               ");
+			}//close if
+			String indexString = "" + i;
+			Item current = spaceMarket.getItem(i);
+			int currentStock = current.getStock();
+			String stockString = Integer.toString(currentStock);
+		
+			String newName = current.getName();
+			
+			current = player.getItem(i);
+				if(current.getStock() != 0)
+				{	
+					indexString = "" + i;
+					System.out.print("        [");
+				
+					if(indexString.length() == 1)
+					{
+						indexString = " " + indexString + " ";
+					}
+					else if(indexString.length() == 2)
+					{
+						indexString = " " + indexString;
+					}
+				
+					System.out.print(indexString);
+					System.out.print("] ");
+				
+					//print appropriate spaces after item name
+					if(current.getName().length() < 27)
+					{
+						newName = current.getName();
+						int additionalCharacters = 27 - newName.length();
+					
+						while(newName.length() < 27)
+						{
+							newName = newName + " ";
+						}
+						System.out.print(newName);
+					}
+					//print appropriate space before stock
+					currentStock = current.getStock();
+					stockString = Integer.toString(currentStock);
+					while(stockString.length() < 4)
+					{
+						stockString = " " + stockString;
+					}
+					System.out.print(stockString);
+				}
+				skipLine();
+		}
+		skipLine();
+		
+		print(" ", 80, false, "Wallet: ", "back");
+		System.out.printf("§%.2f\n", player.getWallet());
+		int shipLength = playerShip.getName().length();
+		shipLength = 79 - shipLength;
+		print(" ", shipLength, false, "", "none");
+		System.out.print(playerShip.getName() + "'s Fuel: " + playerShip.checkFuel() + "b\n");
 		
 		System.out.println("How many buckets of " + fuelItem.getName() + " would you like to buy?");
 		userSelection = input.nextInt();
