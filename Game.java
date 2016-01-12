@@ -760,10 +760,13 @@ public class Game
 				wallet = fileInput.nextDouble();
 				player.addMoney(wallet);
 				
+				//get size of backpack
+				maximumItems = player.getSize();
+				
 				//backpack
 				for(int i = 0; i < maximumItems; i++)
 				{
-					newStock = fileInput.nextInt();
+					newStock = fileInput.nextInt(); // <----------Problem here
 					current = player.getItem(i);
 					current.setStock(newStock);
 				}
@@ -1181,28 +1184,28 @@ public class Game
 	/*
 		saves the game to a text file of the user's name
 	*/
-	public void saveGame()
-	{
-		try
-		{
+	public void saveGame(){
+		//Something is going wrong with saving items that have a stock of 0
+		try{
 			File saveFile = new File(saveHere);
 			PrintWriter fileOutput = new PrintWriter(saveFile);
 			fileOutput.println(player.getPlayerName());
 			fileOutput.println(day);
 			fileOutput.printf("%.2f\n", player.getWallet());
-			for(int i = 0; i < maximumItems; i++)
-			{
+			
+			//get size of backpack
+			maximumItems = player.getSize();
+			
+			for(int i = 0; i < maximumItems; i++){
 				Item current = player.getItem(i);
 				
-				if(i < maximumItems - 1)
-				{
+				if(i < maximumItems - 1){
 					fileOutput.println(current.getStock());
-				}
-				else
-				{
+				}//close if
+				else{
 					fileOutput.print(current.getStock());
-				}
-			}
+				}//close else
+			}//close for
 			fileOutput.println();
 			fileOutput.println(playerShip.getName());
 			fileOutput.println(player.checkFuel());
@@ -1210,11 +1213,10 @@ public class Game
 			fileOutput.println(lotteryCount);
 			fileOutput.print(currentPlanet.getPlanetName());
 			fileOutput.close();
-		}
-		catch(IOException exception)
-		{
+		}//close try
+		catch(IOException exception){
 			System.out.println("There is no file to save.");
-		}
+		}//close catch
 	}//end of saveGame
 	
 	/*
