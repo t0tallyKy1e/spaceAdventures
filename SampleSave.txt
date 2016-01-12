@@ -1,6 +1,6 @@
 Captain kyle
-21
-4.56
+2
+7.02
 0
 0
 0
@@ -12,7 +12,8 @@ Captain kyle
 0
 3
 0
-theFalcon
-12
+ship
+11
 100.0
 1
+HQ
