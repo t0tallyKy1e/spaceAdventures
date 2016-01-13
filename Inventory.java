@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class Inventory
 {
-	private int size = 11;
+	private int size = 100;
  	private ArrayList<Item> items = new ArrayList<Item>(size);
 	
 	private Item oxygenTanks = new Item("Portable Oxygen Tanks", 0);
@@ -24,8 +24,7 @@ public class Inventory
 	private Item magicSpaceGrass = new Item("Magic Space Grass", 0);
 	private Item ships = new Item("Ships", 0);
 	
-	public void Inventory()
-	{
+	public void Inventory(){
 		addItem(oxygenTanks);
 		addItem(healthPacks);
 		addItem(alienRepellent);
