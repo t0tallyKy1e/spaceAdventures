@@ -1,15 +1,13 @@
 import java.util.ArrayList;
 
-public class EnemyList
-{
+public class EnemyList{
 	private ArrayList<Enemy> enemies = new ArrayList<Enemy>(0);
 	
 	/*
 		adds an Enemy to the list
 		pre: requires an Enemy to add to the list
 	*/
-	public void addEnemy(Enemy tempEnemy)
-	{
+	public void addEnemy(Enemy tempEnemy){
 		enemies.add(tempEnemy);
 	}//end of addEnemy
 	
@@ -17,13 +15,11 @@ public class EnemyList
 		pre: an int for the index of the enemy you wish to see
 		post: returns an Enemy at the index provided
 	*/
-	public Enemy getEnemy(int index)
-	{
+	public Enemy getEnemy(int index){
 		return enemies.get(index);
 	}//end of getEnemy
 	
-	public Enemy getRandomEnemy()
-	{
+	public Enemy getRandomEnemy(){
 		int tempIndex;
 		int max = enemies.size() - 1;
 		int min = 0;
@@ -46,8 +42,7 @@ public class EnemyList
 	/*
 		post: returns the size of the EnemyList
 	*/
-	public int getSize()
-	{
+	public int getSize(){
 		return enemies.size();
 	}//end of getSize
 }//end of EnemyList

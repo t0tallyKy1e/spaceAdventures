@@ -5,8 +5,7 @@
 **    spaceAdventures - Enemy class
 */
 
-public class Enemy extends Player
-{
+public class Enemy extends Player{
 	// name
 	// hitpoints --random hitpoints
 	// inventory
@@ -22,8 +21,7 @@ public class Enemy extends Player
 	/*
 		requires a String for the name of the Enemy
 	*/
-	public Enemy(String name)
-	{
+	public Enemy(String name){
 		this.name = name;
 		hitPoints = getRandomHitPoints();
 		//add attacks to attack list
@@ -33,19 +31,16 @@ public class Enemy extends Player
 		gets random number for the enemy's hit points
 		post: returns int for the enemy's hit points
 	*/
-	public int getRandomHitPoints()
-	{
+	public int getRandomHitPoints(){
 		int max = MAXIMUM_HIT_POINTS;
 		int min = 1;
 		int range = max - min;
 		int offset;
-		if (min > max)
-		{
+		if (min > max){
 			max = min;
 			offset = max;
 		}
-		else
-		{
+		else{
 			offset = min;
 		}
 		
@@ -56,8 +51,7 @@ public class Enemy extends Player
 	/*
 		post: returns the Enemy's health
 	*/
-	public int getHealth()
-	{
+	public int getHealth(){
 		return hp;
 	}//end of getHealth
 	
@@ -65,8 +59,7 @@ public class Enemy extends Player
 		give enemy an inventory
 		pre: requires an Item to give to the enemy
 	*/
-	public void giveItem(Item tempItem)
-	{
+	public void giveItem(Item tempItem){
 		heldItem = tempItem;
 	}//end of giveItem
 	
@@ -74,8 +67,7 @@ public class Enemy extends Player
 		give player the Item when the Enemy's health reaches 0
 		post: returns the Enemy's heldItem
 	*/
-	public Item getItem()
-	{
+	public Item getItem(){
 		return heldItem;
 	}//end of getItem
 	
@@ -83,8 +75,7 @@ public class Enemy extends Player
 		arms the enemy with different Attacks
 		pre: requires an Attack to add to the AttackList
 	*/
-	public void addAttack(Attack tempAttack)
-	{
+	public void addAttack(Attack tempAttack){
 		attacks.addAttack(tempAttack);
 	}//end of addAttack
 	
@@ -92,8 +83,7 @@ public class Enemy extends Player
 		allows the enemy to take damage
 		pre: requires an int of health to subtract from the Enemy's health
 	*/
-	public void removeHealth(int tempHealth)
-	{
+	public void removeHealth(int tempHealth){
 		hp = hp - tempHealth;
 	}//end of removeHealth
 	
@@ -101,20 +91,17 @@ public class Enemy extends Player
 		chooses a random attack to use against the player
 		post: returns an attack to use against the player
 	*/
-	public Attack useAttack()
-	{
+	public Attack useAttack(){
 		int tempIndex;
 		int max = attacks.getSize();
 		int min = 0;
 		int range = max - min;
 		int offset;
-		if (min > max)
-		{
+		if (min > max){
 			max = min;
 			offset = max;
 		}
-		else
-		{
+		else{
 			offset = min;
 		}
 		
@@ -125,8 +112,7 @@ public class Enemy extends Player
 	/*
 		post: returns the name of the Enemy as a String
 	*/
-	public String getName()
-	{
+	public String getName(){
 		return name;
 	}//end of getName
 }//end of Enemy

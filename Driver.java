@@ -9,10 +9,8 @@
 **    to buy when prices are low and sell when prices are high.
 */
 
-public class Driver
-{
-	public static void main (String[] args)
-	{
+public class Driver{
+	public static void main (String[] args){
 		Game spaceAdventures = new Game();
 		spaceAdventures.gameSetup();
 		spaceAdventures.welcomeMessage();

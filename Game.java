@@ -9,8 +9,7 @@ import java.io.*;
 **    spaceAdventures - Game class
 */
 
-public class Game
-{
+public class Game{
 	private final double SEED_MONEY = 20;
 	private final double VERY_LOW_STOCK = .6;
 	private final double LOW_STOCK = .4;
@@ -80,8 +79,7 @@ public class Game
 	/*
 		sets up all needed aspects of the game
 	*/
-	public void gameSetup()
-	{	
+	public void gameSetup(){	
 		setMarketStockAndPrice();
 		addPlanets();
 		player.addAttack(playerKick);
@@ -95,8 +93,7 @@ public class Game
 		pre: requires an Item to add
 		pre: requires an int for the stock of the Player's Item
 	*/
-	public void addItem(Item tempItem)
-	{
+	public void addItem(Item tempItem){
 		player.addPlayerItem(tempItem);
 		spaceMarket.addItem(tempItem);
 	}//end of addItem
@@ -104,8 +101,7 @@ public class Game
 	/*
 		adds new planet with enemies and unique items
 	*/
-	public void addPlanets()
-	{
+	public void addPlanets(){
 		iceCave = new Planet("Ice Cave", 5);
 		volcanus = new Planet("Volcanus", 9);
 		//-----add everything to yeti
@@ -139,12 +135,10 @@ public class Game
 		- asks the user if they want to begin
 		- prevents the user from entering anything but a form of yes
 	*/
-	public void beginPrompt()
-	{
+	public void beginPrompt(){
 		System.out.println("Would you like to begin?");
 		userString = input.next();
-		switch (userString)
-		{
+		switch (userString){
 			case "yes":
 			case "y":
 			case "Y":
@@ -167,8 +161,7 @@ public class Game
 	/*
 		allows the user to buy fuel
 	*/
-	public void buyFuel()
-	{
+	public void buyFuel(){
 		Item fuelItem = fuelStation.getItem(0);
 		
 		//format printing to make a text version of a "GUI"
@@ -209,8 +202,7 @@ public class Game
 		System.out.printf("%.2f ", fuelItem.getPrice());
 		System.out.print("                                 ");
 			
-		for(int i = 0; i < maximumItems; i++)
-		{
+		for(int i = 0; i < maximumItems; i++){
 			if(i > 0){
 				System.out.print("                                                                               ");
 			}//close if
@@ -222,17 +214,14 @@ public class Game
 			String newName = current.getName();
 			
 			current = player.getItem(i);
-			if(current.getStock() != 0)
-			{	
+			if(current.getStock() != 0){	
 				indexString = "" + i;
 				System.out.print("        [");
 			
-				if(indexString.length() == 1)
-				{
+				if(indexString.length() == 1){
 					indexString = " " + indexString + " ";
 				}
-				else if(indexString.length() == 2)
-				{
+				else if(indexString.length() == 2){
 					indexString = " " + indexString;
 				}
 			
@@ -240,13 +229,11 @@ public class Game
 				System.out.print("] ");
 			
 				//print appropriate spaces after item name
-				if(current.getName().length() < 27)
-				{
+				if(current.getName().length() < 27){
 					newName = current.getName();
 					int additionalCharacters = 27 - newName.length();
 				
-					while(newName.length() < 27)
-					{
+					while(newName.length() < 27){
 						newName = newName + " ";
 					}
 					System.out.print(newName);
@@ -254,8 +241,7 @@ public class Game
 				//print appropriate space before stock
 				currentStock = current.getStock();
 				stockString = Integer.toString(currentStock);
-				while(stockString.length() < 4)
-				{
+				while(stockString.length() < 4){
 					stockString = " " + stockString;
 				}
 				System.out.print(stockString);
@@ -288,8 +274,7 @@ public class Game
 	/*
 		allows the user to buy an item
 	*/
-	public void buyItem()
-	{
+	public void buyItem(){
 		Item marketItem;
 		Item userItem;
 		Item tempItem;
@@ -309,8 +294,7 @@ public class Game
 		
 		tempItem = spaceMarket.getItem(userSelection);
 		
-		while(userSelection > maximumItems)
-		{
+		while(userSelection > maximumItems){
 			System.out.println("That item does not exist. Please pick one of the items for sale.");
 			//prompt user for which item they would like to purchase
 			System.out.println("Which item would you like to buy?");
@@ -321,8 +305,7 @@ public class Game
 		//check if choice is valid
 		
 		//----price is too expensive
-		while(tempItem.getPrice() > playerWallet)
-		{
+		while(tempItem.getPrice() > playerWallet){
 			System.out.println("You currently can't afford any of that item.");
 			//prompt user for which item they would like to purchase
 			System.out.println("Which item would you like to buy?");
@@ -341,16 +324,14 @@ public class Game
 		userSelection = input.nextInt();
 		
 		//----there aren't enough of that item
-		while(userSelection > itemStock)
-		{
+		while(userSelection > itemStock){
 			System.out.println("We currently do not have enough of that item in stock.");
 			System.out.println("Please enter another amount.");
 			userSelection = input.nextInt();
 		}
 		
 		//----stock choice is not high enough
-		while(userSelection < 1)
-		{
+		while(userSelection < 1){
 			System.out.println("It seems the number you entered is not high enough.");
 			System.out.println("Please choose another item.");
 			userSelection = input.nextInt();
@@ -359,8 +340,7 @@ public class Game
 		totalCost = userSelection * itemPrice;
 		
 		//check if the user has enough money
-		while (totalCost > playerWallet)
-		{
+		while (totalCost > playerWallet){
 			System.out.println("You don't have enough money, " + player.getPlayerName());
 			System.out.println("How many " + marketItem.getName() + " would you like to buy?");
 			
@@ -377,8 +357,7 @@ public class Game
 	/*
 		gives the user all of the options for each day
 	*/
-	public void dailyMenu()
-	{
+	public void dailyMenu(){
 		Item marketItem;
 		Item playerItem;
 		Item fuelItem = fuelStation.getItem(0);
@@ -398,8 +377,7 @@ public class Game
 		System.out.printf("[ 3 ]  Buy Fuel (Currently §%.2f per bucket)\n",fuelPrice);
 		System.out.println("[ 4 ]  Visit Planet");
 		
-		if(day % 9 == 0)
-		{
+		if(day % 9 == 0){
 			System.out.println("[ 9 ]  Play The Lottery (§1 to play)");
 		}
 		System.out.println("[999]  Quit game");
@@ -407,18 +385,14 @@ public class Game
 		
 		//check if the user can sell an item
 		boolean canSell = false;
-		for(int i = 0; i < maximumItems; i++)
-		{
+		for(int i = 0; i < maximumItems; i++){
 			playerItem = player.getItem(i);
 			
-			if(canSell == false)
-			{
-				if(playerItem.getStock() > 0)
-				{
+			if(canSell == false){
+				if(playerItem.getStock() > 0){
 					canSell = true;
 				}
-				else
-				{
+				else{
 					canSell = false;
 				}
 			}
@@ -427,90 +401,74 @@ public class Game
 		//check if the user can buy fuel
 		fuelItem = fuelStation.getItem(0);
 		fuelPrice = fuelItem.getPrice();
-		if(playerWallet < fuelItem.getPrice() && userInt == 3)
-		{
+		if(playerWallet < fuelItem.getPrice() && userInt == 3){
 			System.out.println("You don't have enough shards to buy fuel... Hopefully you're not stranded.");
 			dailyMenu();
 		}
 		
 		//check if the user can play the lottery
-		if(playerWallet < 1 && userInt == 9)
-		{
+		if(playerWallet < 1 && userInt == 9){
 			System.out.println("You don't have enough shards to play the lottery");
 			dailyMenu();
 		}
-		else if(playerWallet >=1 && userInt == 9 && day % 9 != 0)
-		{
+		else if(playerWallet >=1 && userInt == 9 && day % 9 != 0){
 			System.out.println("I see you memorized the menu... You can't do that today.");
 			dailyMenu();
 		}
 		
 		//complete the user's action
-		if(userInt == 0)
-		{
+		if(userInt == 0){
 			//do nothing but increment day, which happens in dailyMessage()
 		}
 		//----user can buy an item
-		else if(userInt == 1)
-		{
+		else if(userInt == 1){
 			buyItem();
 		}
 		//----user can't buy an item
-		else if(userInt == 1)
-		{
+		else if(userInt == 1){
 			System.out.println("You don't have enough shards to buy anything today. Try something else.");
 			dailyMenu();
 		}
 		//----user can sell
-		else if(userInt == 2 && canSell == true)
-		{
+		else if(userInt == 2 && canSell == true){
 			sellItem();
 		}
 		//----user can't sell
-		else if(userInt == 2 && canSell == false)
-		{
+		else if(userInt == 2 && canSell == false){
 			System.out.println("You don't have any items to sell, today. Try something else.");
 			dailyMenu();
 		}
 		//----buy fuel
-		else if(userInt == 3 && player.getWallet() >= fuelStation.getItem(0).getPrice())
-		{
+		else if(userInt == 3 && player.getWallet() >= fuelStation.getItem(0).getPrice()){
 			buyFuel();
 		}
 		//----user can't buy fuel
-		else if(userInt == 3 && player.getWallet() < fuelStation.getItem(0).getPrice())
-		{
+		else if(userInt == 3 && player.getWallet() < fuelStation.getItem(0).getPrice()){
 			System.out.println("You can't afford fuel today. Try something else.");
 			dailyMenu();
 		}
 		//----visit planet
-		else if(userInt == 4 && (playerShip.checkFuel() >= volcanus.getTripCost()))
-		{
+		else if(userInt == 4 && (playerShip.checkFuel() >= volcanus.getTripCost())){
 			visitPlanetPrompt();
 		}
-		else if(userInt == 4 && (playerShip.checkFuel() >= iceCave.getTripCost()))
-		{
+		else if(userInt == 4 && (playerShip.checkFuel() >= iceCave.getTripCost())){
 			visitPlanetPrompt();
 		}
 		//----user can't visit planet
-		else if(userInt == 4 && (playerShip.checkFuel() < iceCave.getTripCost()))
-		{
+		else if(userInt == 4 && (playerShip.checkFuel() < iceCave.getTripCost())){
 			System.out.println("You don't have enough fuel to travel right now");
 			dailyMenu();
 		}
 		//----lottery
-		else if(userInt == 9 && playerWallet >= 1)
-		{
+		else if(userInt == 9 && playerWallet >= 1){
 			lottery();
 		}
 		//----quit game
-		else if(userInt == 999)
-		{
+		else if(userInt == 999){
 			quitGame();
 		}
 		//----user didn't choose anything on the menu
-		else
-		{
+		else{
 			System.out.println("You didn't choose any of the options... what a rebel. Please pick something this time.");
 			dailyMenu();
 		}
@@ -519,10 +477,8 @@ public class Game
 	/*
 		daily routine
 	*/
-	public void dailyMessage()
-	{
-		while (userInt != 999)
-		{
+	public void dailyMessage(){
+		while (userInt != 999){
 			day++;
 			setMarketStockAndPrice();
 			printMarketAndPlayerInfo();
@@ -536,8 +492,7 @@ public class Game
 		Allows the Enemy to attack
 		post: returns the damage points as an int
 	*/
-	public int enemyAttack()
-	{
+	public int enemyAttack(){
 		Attack tempAttack = tempEnemy.useAttack();
 		int damage = tempAttack.getDamagePoints();
 		System.out.println(tempEnemy.getName() + " used " + tempAttack.getAttackName() + ".");
@@ -547,46 +502,38 @@ public class Game
 	/*
 		allows the Player to fight a random Enemy on the Planet they are currently on
 	*/
-	public void fightEnemy()
-	{
+	public void fightEnemy(){
 		tempEnemy = planets.getPlanet(planetInt).getEnemy();
 		System.out.println("You are about to fight a " + tempEnemy.getName() + ".");
 		System.out.println("You will now do a coin toss to see who goes first.");
 		System.out.println("Please pick either side 1 or side 2 (Enter just the number)");
 		int winningSide = randomInt(1, 2);
 		int userSide = input.nextInt();
-		while(userSide > 2 || userSide < 1)
-		{
+		while(userSide > 2 || userSide < 1){
 			System.out.println("Invalid entry. Please try again.");
 		}
-		if (userSide == winningSide)
-		{
+		if (userSide == winningSide){
 			System.out.println("You will go first.");
-			while(player.getPlayerHealth() > 0 && tempEnemy.getHealth() > 0)
-			{
+			while(player.getPlayerHealth() > 0 && tempEnemy.getHealth() > 0){
 				healthBanner();
 				int damagePoints = playerAttack();
 				System.out.println(tempEnemy.getName() + " recevied " + damagePoints + " points of damage." + "\n");
 				tempEnemy.removeHealth(damagePoints);
-				if (tempEnemy.getHealth() > 0)
-				{
+				if (tempEnemy.getHealth() > 0){
 					damagePoints = enemyAttack();
 					System.out.println("You received " + damagePoints + " points of damage." + "\n");
 					player.removeHealth(damagePoints);
 				}
 			}
 		}
-		else if(userSide != winningSide)
-		{
+		else if(userSide != winningSide){
 			System.out.println("You lost the coin toss. " + tempEnemy.getName() + " will go first.");
-			while(player.getPlayerHealth() > 0 && tempEnemy.getHealth() > 0)
-			{
+			while(player.getPlayerHealth() > 0 && tempEnemy.getHealth() > 0){
 				healthBanner();
 				int damagePoints = enemyAttack();
 				System.out.println("You received " + damagePoints + " points of damage." + "\n");
 				player.removeHealth(damagePoints);
-				if(player.getPlayerHealth() > 0)
-				{
+				if(player.getPlayerHealth() > 0){
 					damagePoints = playerAttack();
 					System.out.println(tempEnemy.getName() + " recevied " + damagePoints + " points of damage." + "\n");
 					tempEnemy.removeHealth(damagePoints);
@@ -598,8 +545,7 @@ public class Game
 	/*
 		Check if the user is finished with whatever they were doing
 	*/
-	public void finishedPrompt()
-	{
+	public void finishedPrompt(){
 		System.out.println("Press [ 0 ] to continue.");
 		print("-", FULL_LINE, true,"", "none");
 		userInt = input.nextInt();
@@ -608,8 +554,7 @@ public class Game
 	/*
 		starts the first day without incrementing the day
 	*/
-	public void firstDay()
-	{
+	public void firstDay(){
 		setMarketStockAndPrice();
 		printMarketAndPlayerInfo();
 		dailyMenu();
@@ -625,25 +570,20 @@ public class Game
 		pre: a string for the placement of the additional string
 		post: returns a string of the symbol provided
 	*/
-	public String getSymbolString(String symbol, int amount, String additionalString, String placement)
-	{
+	public String getSymbolString(String symbol, int amount, String additionalString, String placement){
 		String symbolString = symbol;
 		
-		for(int count = 1; count < amount; count++)
-		{
+		for(int count = 1; count < amount; count++){
 			symbolString = symbolString + symbol;
 		}
 		
-		if(placement == "front")
-		{
+		if(placement == "front"){
 			symbolString = additionalString + symbolString;
 		}
-		else if(placement == "back")
-		{
+		else if(placement == "back"){
 			symbolString = symbolString + additionalString;
 		}
-		else if(placement == "front and back")
-		{
+		else if(placement == "front and back"){
 			symbolString = additionalString + symbolString + additionalString;
 		}
 		return symbolString;
@@ -652,17 +592,14 @@ public class Game
 	/*
 		shows the Player's health and the Enemy's health
 	*/
-	public void healthBanner()
-	{
+	public void healthBanner(){
 		print("_", FULL_LINE - 2, true, " ", "front");
 		String enemyBanner = "| " + tempEnemy.getName() + "'s Health: " + tempEnemy.getHealth();
-		while(enemyBanner.length() < 63)
-		{
+		while(enemyBanner.length() < 63){
 			enemyBanner = enemyBanner + " ";
 		}
 		String playerBanner= player.getPlayerName() + "'s Health: " + player.getPlayerHealth() + " |";
-		while(playerBanner.length() < 63)
-		{
+		while(playerBanner.length() < 63){
 			playerBanner = " " + playerBanner;
 		}
 		System.out.println(enemyBanner + playerBanner);
@@ -672,8 +609,7 @@ public class Game
 	/*
 		Menu and options when a player lands on a planet
 	*/
-	public void landedOnPlanet()
-	{
+	public void landedOnPlanet(){
 		int subMenu;
 		System.out.println("\nWhat would you like to do while you're here?");
 		print("-", FULL_LINE, true,"", "none");
@@ -682,29 +618,24 @@ public class Game
 		System.out.println("[ 2 ] Explore For Items");
 		System.out.println("[ 9 ] Go Back To Headquarters");
 		subMenu = input.nextInt();
-		if(subMenu == 0)
-		{
+		if(subMenu == 0){
 			//print planet info
 			String tempString = planets.getPlanet(planetInt).getPlanetInfo();
 			System.out.println(tempString);
 			finishedPrompt();
-			if(userInt == 0)
-			{
+			if(userInt == 0){
 				landedOnPlanet();
 			}
-			else if(userInt == 1)
-			{
+			else if(userInt == 1){
 				finishedPrompt();
 				resetCurrentPlanet();
 			}
 		}
-		else if(subMenu == 1)
-		{
+		else if(subMenu == 1){
 			fightEnemy();
 			resetCurrentPlanet();
 		}
-		else if(subMenu == 2)
-		{
+		else if(subMenu == 2){
 			Item tempItem = currentPlanet.getUniqueItem();
 			int randInt = randomInt(1, 25);
 			tempItem.setStock(randInt);
@@ -720,8 +651,7 @@ public class Game
 			
 			resetCurrentPlanet();
 		}
-		else if(subMenu == 9)
-		{
+		else if(subMenu == 9){
 			resetCurrentPlanet();
 			//----charge fuel
 			//----make the user get stranded if they don't have enough fuel
@@ -732,10 +662,8 @@ public class Game
 	/*
 		loads a previous game
 	*/
-	public void loadGame()
-	{
-		try
-		{
+	public void loadGame(){
+		try{
 			String userFile = "";
 			String userName = "";
 			String shipName = "";
@@ -749,8 +677,7 @@ public class Game
 			File file = new File(userFile);
 			Scanner fileInput = new Scanner(file);
 			
-			while(fileInput.hasNextLine())
-			{
+			while(fileInput.hasNextLine()){
 				//name
 				String dontUseCaptain = fileInput.next();
 				userName = fileInput.next();
@@ -768,8 +695,7 @@ public class Game
 				maximumItems = player.getSize();
 				
 				//backpack
-				for(int i = 0; i < maximumItems; i++)
-				{
+				for(int i = 0; i < maximumItems; i++){
 					newStock = fileInput.nextInt(); // <----------Problem here
 					current = player.getItem(i);
 					current.setStock(newStock);
@@ -785,8 +711,7 @@ public class Game
 			}
 			fileInput.close();
 		}
-		catch(IOException exception)
-		{
+		catch(IOException exception){
 			System.out.println("~ This is not the file you're looking for ~");
 			loadGame();
 		}
@@ -795,8 +720,7 @@ public class Game
 	/*
 		lottery that shows up every 9 days
 	*/
-	public void lottery()
-	{
+	public void lottery(){
 		int magicNumber = randomInt(1, 10);
 		player.removeMoney(1);
 		skipLine();
@@ -844,8 +768,7 @@ public class Game
 	/*
 		starts a fresh, new game 
 	*/
-	public void newGame()
-	{
+	public void newGame(){
 		System.out.println("Please enter your name, explorer.");
 		userString = input.next();
 		saveHere = userString + ".txt";
@@ -878,9 +801,8 @@ public class Game
 		allows the user to atack
 		post: returns the damage points as an int
 	*/
-	public int playerAttack()
-	{
-		System.out.println("Which attack would you like to use?");
+	public int playerAttack(){
+        	System.out.println("Which attack would you like to use?");
 		print("-", FULL_LINE, true,"", "none");
 		player.viewAttacks();
 		userInt = input.nextInt();
@@ -897,15 +819,12 @@ public class Game
 		pre: a string for any additional strings you would like to add on once
 		pre: a string for the placement of the additional string
 	*/
-	public void print(String string, int amount, boolean willPrintLine, String additionalString, String placement)
-	{
+	public void print(String string, int amount, boolean willPrintLine, String additionalString, String placement){
 		
-		if(willPrintLine == true)
-		{
+		if(willPrintLine == true){
 			System.out.println(getSymbolString(string, amount, additionalString, placement));
 		}
-		else if(willPrintLine == false)
-		{
+		else if(willPrintLine == false){
 			System.out.print(getSymbolString(string, amount, additionalString, placement));
 		}
 	}//end of print
@@ -913,8 +832,7 @@ public class Game
 	/*
 		prints the header for the market and player "GUI"
 	*/
-	public void printHeader()
-	{
+	public void printHeader(){
 		//format printing to make a text version of a "GUI"
 		print("_", 68, false, " ", "front");
 		print("_", 38, true, "                  ", "front");
@@ -939,38 +857,32 @@ public class Game
 	/*
 		print all market and player info
 	*/
-	public void printMarketAndPlayerInfo()
-	{
+	public void printMarketAndPlayerInfo(){
 		maximumItems = spaceMarket.getSize();
 		print("_", FULL_LINE - 2, true, " ", "front"); 
 		currentString = "| Current Day: " + day;
-		while (currentString.length() < 62)
-		{
+		while (currentString.length() < 62){
 			currentString = currentString + " " ;
 		}
 		String planetNameString = "Current Planet: " + currentPlanet.getPlanetName() + " |";
-		while(planetNameString.length() < 64)
-		{
+		while(planetNameString.length() < 64){
 			planetNameString = " " + planetNameString;
 		}
 		System.out.println(currentString + planetNameString);
 		print("‾", FULL_LINE - 2, true, " ", "front");
 		printHeader();
 		
-		for(int i = 0; i < maximumItems; i++)
-		{
+		for(int i = 0; i < maximumItems; i++){
 			//----market info
 			Item current = spaceMarket.getItem(i);
 			//print index formatted with brackets
 			String indexString = "" + i;
 			System.out.print(" [");
 			
-			if(indexString.length() == 1)
-			{
+			if(indexString.length() == 1){
 				indexString = " " + indexString + " ";
 			}
-			else if(indexString.length() == 2)
-			{
+			else if(indexString.length() == 2){
 				indexString = " " + indexString;
 			}
 			
@@ -980,8 +892,7 @@ public class Game
 			//provide appropriate space between name and price
 			String newName = current.getName();
 			
-			while(newName.length() < 29)
-			{
+			while(newName.length() < 29){
 				newName = newName + " ";
 			}
 			System.out.print(newName);
@@ -989,20 +900,16 @@ public class Game
 			//print appropriate spaces after § symbol
 			System.out.print("§");
 			String priceSpacer = " ";
-			if (current.getPrice() < 10000 && current.getPrice() >= 1000)
-			{
+			if (current.getPrice() < 10000 && current.getPrice() >= 1000){
 				System.out.print(" ");
 			}
-			else if (current.getPrice() < 1000 && current.getPrice() >= 100)
-			{
+			else if (current.getPrice() < 1000 && current.getPrice() >= 100){
 				System.out.print("  ");
 			}
-			else if (current.getPrice() < 100 && current.getPrice() >= 10)
-			{
+			else if (current.getPrice() < 100 && current.getPrice() >= 10){
 				System.out.print("   ");
 			}
-			else if (current.getPrice() < 10 && current.getPrice() >= 1)
-			{
+			else if (current.getPrice() < 10 && current.getPrice() >= 1){
 				System.out.print("    ");
 			}
 			System.out.printf("%.2f ", current.getPrice());
@@ -1011,8 +918,7 @@ public class Game
 			int currentStock = current.getStock();
 			String stockString = Integer.toString(currentStock);
 			
-			while(stockString.length() < 22)
-			{
+			while(stockString.length() < 22){
 				stockString = " " + stockString;
 			}
 			
@@ -1020,17 +926,14 @@ public class Game
 			
 			//----player backpack
 			current = player.getItem(i);
-			if(current.getStock() != 0)
-			{	
+			if(current.getStock() != 0){	
 				indexString = "" + i;
 				System.out.print("        [");
 				
-				if(indexString.length() == 1)
-				{
+				if(indexString.length() == 1){
 					indexString = " " + indexString + " ";
 				}
-				else if(indexString.length() == 2)
-				{
+				else if(indexString.length() == 2){
 					indexString = " " + indexString;
 				}
 				
@@ -1038,8 +941,7 @@ public class Game
 				System.out.print("] ");
 				
 				//print appropriate spaces after item name
-				if(current.getName().length() < 27)
-				{
+				if(current.getName().length() < 27){
 					newName = current.getName();
 					int additionalCharacters = 27 - newName.length();
 					
@@ -1052,8 +954,7 @@ public class Game
 				//print appropriate space before stock
 				currentStock = current.getStock();
 				stockString = Integer.toString(currentStock);
-				while(stockString.length() < 4)
-				{
+				while(stockString.length() < 4){
 					stockString = " " + stockString;
 				}
 				System.out.print(stockString);
@@ -1075,22 +976,18 @@ public class Game
 	/*
 		outputs a message for the user when they quit and tells them how they did.
 	*/
-	public void quitGame()
-	{
+	public void quitGame(){
 		Item current;
 		skipLine();
 		print("*", FULL_LINE, true, "", "none");
-		if (player.getWallet() > 20)
-		{
+		if (player.getWallet() > 20){
 			double profit = player.getWallet() - 20;
 			System.out.printf("You made §%.2f", profit );
 		}
-		else if (player.getWallet() == 20)
-		{
+		else if (player.getWallet() == 20){
 			System.out.println("Congratulations!!! You did nothing!");
 		}
-		else
-		{
+		else{
 			double loss = 20 - player.getWallet();
 			System.out.printf("You lost §%.2f", loss);
 		}
@@ -1102,20 +999,16 @@ public class Game
 		System.out.println("| Item                           Stock |");
 		System.out.println(" ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾");
 		
-		for(int i = 0; i < maximumItems; i++)
-		{
+		for(int i = 0; i < maximumItems; i++){
 			current = player.getItem(i);
-			if(current.getStock() != 0)
-			{	
+			if(current.getStock() != 0){	
 				String indexString = "" + i;
 				System.out.print(" [");
 				
-				if(indexString.length() == 1)
-				{
+				if(indexString.length() == 1){
 					indexString = " " + indexString + " ";
 				}
-				else if(indexString.length() == 2)
-				{
+				else if(indexString.length() == 2){
 					indexString = " " + indexString;
 				}
 				
@@ -1123,13 +1016,11 @@ public class Game
 				System.out.print("] ");
 				
 				//print appropriate spaces after item name
-				if(current.getName().length() < 28)
-				{
+				if(current.getName().length() < 28){
 					String newName = current.getName();
 					int additionalCharacters = 28 - newName.length();
 					
-					while(newName.length() < 28)
-					{
+					while(newName.length() < 28){
 						newName = newName + " ";
 					}
 					System.out.print(newName);
@@ -1138,8 +1029,7 @@ public class Game
 				//print appropriate space before stock
 				int currentStock = current.getStock();
 				String stockString = Integer.toString(currentStock);
-				while(stockString.length() < 4)
-				{
+				while(stockString.length() < 4){
 					stockString = "  " + stockString + "\n";
 				}
 				
@@ -1157,18 +1047,15 @@ public class Game
 		pre: requires an integer for the start
 		pre: requires an integer for the finish
 	*/
-	public int randomInt(int start, int finish)
-	{
+	public int randomInt(int start, int finish){
 		int range = finish - start + 1;
 		int offset;
 		
-		if (range < 0)
-		{
+		if (range < 0){
 			range = range * -1;
 			offset = finish;
 		}
-		else
-		{
+		else{
 			offset = start;
 		}
 		int randomInt = (int) (Math.random() * range) + offset;
@@ -1178,16 +1065,14 @@ public class Game
 	/*
 		changes the current planet to HQ
 	*/
-	public void resetCurrentPlanet()
-	{
+	public void resetCurrentPlanet(){
 		currentPlanet.setPlanetName("HQ");
 	}//end of resetCurrentPlanet
 
 	/*
 		saves the game to a text file of the user's name
 	*/
-	public void saveGame()
-	{
+	public void saveGame(){
 		//Something is going wrong with saving items that have a stock of 0
 		try{
 			File saveFile = new File(saveHere);
@@ -1225,8 +1110,7 @@ public class Game
 	/*
 		allows the user to sell items
 	*/	
-	public void sellItem()
-	{
+	public void sellItem(){
 		Item marketItem;
 		Item userItem;
 		Item tempItem;
@@ -1243,8 +1127,7 @@ public class Game
 		System.out.println("Which item would you like to sell?");
 		userSelection = input.nextInt();
 		
-		while(userSelection > maximumItems)
-		{
+		while(userSelection > maximumItems){
 			System.out.println("That item does not exist. Please pick one of the items that is actually for sale.");
 			//prompt user for which item they would like to sell
 			System.out.println("Which item would you like to sell?");
@@ -1255,8 +1138,7 @@ public class Game
 		tempItem = player.getItem(userSelection);
 		
 		//----check if choice is valid
-		while(tempItem.getStock() < 1)
-		{
+		while(tempItem.getStock() < 1){
 			System.out.println("You currently have none of those to sell.");
 			System.out.println("Please choose another item.");
 			userSelection = input.nextInt();
@@ -1273,15 +1155,13 @@ public class Game
 		System.out.println("How many " + userItem.getName() + " would you like to sell?");
 		userSelection = input.nextInt();
 		
-		while(userSelection > itemStock)
-		{
+		while(userSelection > itemStock){
 			System.out.println("You currently do not have that many of that item.");
 			System.out.println("Please choose another amount.");
 			userSelection = input.nextInt();
 		}
 		
-		while(userSelection < 1)
-		{
+		while(userSelection < 1){
 			System.out.println("It seems the number you entered is not high enough.");
 			System.out.println("Please enter another amount.");
 			userSelection = input.nextInt();
@@ -1299,8 +1179,7 @@ public class Game
 	*/
 	public void setMarketStockAndPrice(){
 		maximumItems = player.getSize();
-		for(int i = 0; i < maximumItems; i++)
-		{
+		for(int i = 0; i < maximumItems; i++){
 			Item current = spaceMarket.getItem(i);
 			double newPrice;
 			
@@ -1310,18 +1189,15 @@ public class Game
 			int currentStock = current.getStock();
 			
 			//randomize price but add to the price if the stock is low
-			if(currentStock < 10)
-			{
+			if(currentStock < 10){
 				newPrice = current.getPrice() * VERY_LOW_STOCK + current.getPrice();
 				current.setPrice(newPrice);
 			}
-			else if(currentStock >= 10 && currentStock < 40)
-			{
+			else if(currentStock >= 10 && currentStock < 40){
 				newPrice = current.getPrice() * LOW_STOCK + current.getPrice();
 				current.setPrice(newPrice);
 			}
-			else if(currentStock >= 40 && currentStock < 60)
-			{
+			else if(currentStock >= 40 && currentStock < 60){
 				newPrice = current.getPrice() * MED_STOCK + current.getPrice();
 				current.setPrice(newPrice);
 			}
@@ -1333,29 +1209,25 @@ public class Game
 			fuelItem.setPrice(fuelItem.getRandomPrice());
 			double fuelPrice = fuelItem.getPrice();
 			
-			if(fuelStock < 10)
-			{
+			if(fuelStock < 10){
 				fuelPrice = fuelItem.getPrice() * VERY_LOW_STOCK + fuelItem.getPrice();
 				fuelItem.setPrice(fuelPrice);
-			}
-			else if(fuelStock >= 10 && fuelStock < 40)
-			{
+			}//close if
+			else if(fuelStock >= 10 && fuelStock < 40){
 				fuelPrice = fuelItem.getPrice() * LOW_STOCK + fuelItem.getPrice();
 				fuelItem.setPrice(fuelPrice);
-			}
-			else if(fuelStock >= 40 && fuelStock < 60)
-			{
+			}//close else if
+			else if(fuelStock >= 40 && fuelStock < 60){
 				fuelPrice = fuelItem.getPrice() * MED_STOCK + fuelItem.getPrice();
 				fuelItem.setPrice(fuelPrice);
-			}
-		}
+			}//close else if
+		}//close for
 	}//end of setMarketStockAndPrice
 	
 	/*
 		prints a blank line
 	*/
-	public void skipLine()
-	{
+	public void skipLine(){
 		System.out.println("");
 	}//end of skipLine
 	
@@ -1365,16 +1237,14 @@ public class Game
 		----charge fuel
 		----should not be allowed if user has no fuel
 	*/
-	public void visitPlanetPrompt()
-	{
+	public void visitPlanetPrompt(){
 		System.out.println("\nWhich planet would you like to travel to?");
 		print("-", FULL_LINE, true,"", "none");
 		
 		System.out.println("Planets:");
 		int listLength = planets.getSize();
 		
-		for(int i = 0; i < listLength; i++)
-		{
+		for(int i = 0; i < listLength; i++){
 			System.out.print("[ " + i + " ] ");
 			String tempName = planets.getPlanet(i).getPlanetName() + " (Uses " + planets.getPlanet(i).getTripCost() + "b of Rocket Fuel)";
 			System.out.println(tempName);
@@ -1385,13 +1255,11 @@ public class Game
 		int tempTripCost = planets.getPlanet(planetInt).getTripCost();
 		boolean notEnoughFuel = (player.checkFuel() - tempTripCost) < 0;
 			
-		if(notEnoughFuel == true)
-		{
+		if(notEnoughFuel == true){
 			System.out.println("I'm sorry, but you don't have enough fuel to go there.");
 			visitPlanetPrompt();
 		}
-		else if(notEnoughFuel == false)
-		{
+		else if(notEnoughFuel == false){
 			playerShip.useFuel(tempTripCost);
 			currentPlanet = planets.getPlanet(planetInt);	
 			landedOnPlanet();
@@ -1401,23 +1269,19 @@ public class Game
 	/*
 		Displays the menu after the welcome message
 	*/
-	public void welcomeMenu()
-	{
+	public void welcomeMenu(){
 		System.out.println("What would you like to do?");
 		System.out.println("[ 1 ] Start a new game");
 		System.out.println("[ 2 ] Load game");
 		userInt = input.nextInt();
-		if(userInt == 1)
-		{
+		if(userInt == 1){
 			newGame();
 		}
-		else if(userInt == 2)
-		{
+		else if(userInt == 2){
 			loadGame();
 			beginPrompt();
 		}
-		else
-		{
+		else{
 			System.out.println("Something went wrong.");
 			welcomeMenu();
 		}
@@ -1426,8 +1290,7 @@ public class Game
 	/*
 		Display a welcome message for the user explaining the game
 	*/
-	public void welcomeMessage()
-	{
+	public void welcomeMessage(){
 		print("_", FULL_LINE - 2, true, " ", "front");
 		print(" ", 49, false, "|", "front");
 		print("Welcome to spaceAdventures", 1, false, "", "none");

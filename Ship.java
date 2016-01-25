@@ -7,8 +7,7 @@ import java.util.Scanner;
 **    spaceAdventures - Ship class
 */
 
-public class Ship
-{
+public class Ship{
 	Scanner input = new Scanner(System.in);
 	
 	public static final int STARTING_FUEL = 10;
@@ -21,8 +20,7 @@ public class Ship
     Inventory fuelTank = new Inventory();
 	
 	
-	public Ship()
-	{
+	public Ship(){
 		fuelTank.addItem(rocketFuel);
 	}//end of Ship Constructor #1
 	
@@ -30,16 +28,14 @@ public class Ship
 		takes in the ship's name
 		pre: requires a String for the ship's name
 	*/
-	public void setName(String shipName)
-	{
+	public void setName(String shipName){
 		this.shipName = shipName;
 	}//end of setName
 	
 	/*
 		post: returns the ship's name
 	*/
-	public String getName()
-	{
+	public String getName(){
 		return shipName;
 	}//end of setName
 	
@@ -47,8 +43,7 @@ public class Ship
 		adds fuel to the ship's tank
 		pre: requires an int for the amount of fuel to add
 	*/
-	public void addFuel(int fuelAmount)
-	{
+	public void addFuel(int fuelAmount){
 		Item fuelItem = fuelTank.getItem(0);
 		currentFuel = currentFuel + fuelAmount;
 		fuelItem.setStock(currentFuel);
@@ -58,8 +53,7 @@ public class Ship
 		removes fuel from the ship's fuel tank
 		pre: requires an int for the amount of fuel to remove from the ship's tank
 	*/
-	public void useFuel(int fuelAmount)
-	{
+	public void useFuel(int fuelAmount){
 		Item fuelItem = fuelTank.getItem(0);
 		currentFuel = currentFuel - fuelAmount;
 		fuelItem.setStock(currentFuel);
@@ -69,13 +63,11 @@ public class Ship
 		checks the ship's fuel
 		post: returns the ship's fuel as an int
 	*/
-	public int checkFuel()
-	{
+	public int checkFuel(){
 		return currentFuel;
 	}//end of checkFuel
 	
-	public String getItem(int index)
-	{
+	public String getItem(int index){
 		Item tempItem = fuelTank.getItem(index);
 		return tempItem.getName();
 	}

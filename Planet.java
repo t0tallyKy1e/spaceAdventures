@@ -1,7 +1,6 @@
 //add enemies
 //add unique item
-public class Planet
-{
+public class Planet{
 	private String name;
 	private int tripCost;
 	private String info;
@@ -13,8 +12,7 @@ public class Planet
 		pre: requires a name for the planet
 		pre: requires an int for the cost of the trip to the planet
 	*/
-	public Planet(String name, int tripCost)
-	{
+	public Planet(String name, int tripCost){
 		this.name = name;
 		this.tripCost = tripCost;
 	}//end of Planet Constructor #1
@@ -23,8 +21,7 @@ public class Planet
 		Constructor #2
 		pre: requires a String for the name of the planet
 	*/
-	public Planet(String name)
-	{
+	public Planet(String name){
 		this.name = name;
 	}//end of Planet Constructor #2
 	
@@ -32,16 +29,14 @@ public class Planet
 		Constructor #3
 		requires nothing to function properly
 	*/
-	public Planet()
-	{
+	public Planet(){
 	}//end of Planet Constructor #3
 	
 	/*
 		sets the name of the planet
 		pre: requires a String for the new name of the planet
 	*/
-	public void setPlanetName(String name)
-	{
+	public void setPlanetName(String name){
 		this.name = name;
 	}//end of setPlanetName
 	
@@ -49,8 +44,7 @@ public class Planet
 		gets the name of the planet
 		post: returns a String of the Planet name
 	*/
-	public String getPlanetName()
-	{
+	public String getPlanetName(){
 		return name;
 	}//end of getPlanetName
 	
@@ -58,8 +52,7 @@ public class Planet
 		pre: requires a name for the enemy
 		pre: requires an int for the hit points of the enemy
 	*/
-	public void addEnemy(Enemy enemy)
-	{
+	public void addEnemy(Enemy enemy){
 		enemies.addEnemy(enemy);
 	}//end of addEnemy
 	
@@ -67,8 +60,7 @@ public class Planet
 		pre: requires an Item to add
 		pre: reuires an index where you'd like to place the item
 	*/
-	public void addUniqueItem(Item uniqueItem)
-	{
+	public void addUniqueItem(Item uniqueItem){
 		planetInventory.addItem(uniqueItem);
 	}//end of addUniqueItem
 	
@@ -76,8 +68,7 @@ public class Planet
 		pre: requires an int of the index of the Item you would like to get
 		post: returns the item at the index provided
 	*/
-	public Item getUniqueItem()
-	{
+	public Item getUniqueItem(){
 		return planetInventory.getItem(0);
 	}//end of getUniqueItem
 	
@@ -85,8 +76,7 @@ public class Planet
 		gets the cost of the trip
 		post: returns an int of the trip cost
 	*/
-	public int getTripCost()
-	{
+	public int getTripCost(){
 		return tripCost;
 	}//end of getTripCost
 	
@@ -94,8 +84,7 @@ public class Planet
 		adds a description to the planet
 		pre: requires a String of info
 	*/
-	public void addPlanetInfo(String info)
-	{
+	public void addPlanetInfo(String info){
 		this.info = info;
 	}//end of addPlanetInfo
 	
@@ -103,28 +92,24 @@ public class Planet
 		gets the description of the planet
 		post: returns a String of the planet's description
 	*/
-	public String getPlanetInfo()
-	{
+	public String getPlanetInfo(){
 		return info;
 	}//end of getPlanetInfo
 	
 	/*
 		post: returns an Enemy
 	*/
-	public Enemy getEnemy()
-	{
+	public Enemy getEnemy(){
 		int tempIndex;
 		int max = enemies.getSize();
 		int min = 0;
 		int range = max - min;
 		int offset;
-		if (min > max)
-		{
+		if (min > max){
 			max = min;
 			offset = max;
 		}
-		else
-		{
+		else{
 			offset = min;
 		}
 		

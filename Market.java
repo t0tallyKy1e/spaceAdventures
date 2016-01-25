@@ -5,8 +5,7 @@
 **    spaceAdventures - Market class
 */
 
-public class Market
-{	
+public class Market{	
 	private Inventory warehouse = new Inventory();
 	
 	private Item oxygenTanks = new Item("Portable Oxygen Tanks", 1.0, 8.0);
@@ -25,8 +24,7 @@ public class Market
 		Market Constructor
 		fills the market with items
 	*/
-	public Market()
-	{
+	public Market(){
 		warehouse.addItem(oxygenTanks);
 		warehouse.addItem(healthPacks);
 		warehouse.addItem(alienRepellent);
@@ -45,8 +43,7 @@ public class Market
 		pre: requires an Item to add
 		pre: requires an int for the index location of the Item in the array
 	*/
-	public void addItem(Item item)
-	{
+	public void addItem(Item item){
 		warehouse.addItem(item);
 	}//end of addItem
 	
@@ -56,8 +53,7 @@ public class Market
 		pre: an int for the index is required
 		post: returns the Item at the index given
 	*/
-	public Item getItem(int index)
-	{
+	public Item getItem(int index){
 		return warehouse.getItem(index);
 	}//end of getItem
 	
@@ -65,8 +61,7 @@ public class Market
 		gets the size of the Market
 		post: returns an int of the size
 	*/
-	public int getSize()
-	{
+	public int getSize(){
 		return warehouse.getSize();
 	}//end of getLength
 }//end of Market

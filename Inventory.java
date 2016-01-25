@@ -7,9 +7,8 @@ import java.util.ArrayList;
 **    spaceAdventures - Inventory class
 */
 
-public class Inventory
-{
-	private int size = 100;
+public class Inventory{
+	private int size = 11;
  	private ArrayList<Item> items = new ArrayList<Item>(size);
 	
 	private Item oxygenTanks = new Item("Portable Oxygen Tanks", 0);
@@ -43,8 +42,7 @@ public class Inventory
 		pre: requires an Item to be added
 		pre: requires an int for the index of the Item
 	*/
-	public void addItem(Item item)
-	{
+	public void addItem(Item item){
 		items.add(item);
 	}//end of addItem
 	
@@ -53,8 +51,7 @@ public class Inventory
 		pre: must include the array index of the item you would like
 		post: returns an Item at a certain index in the items array
 	*/
-	public Item getItem(int index)
-	{
+	public Item getItem(int index){
 		return items.get(index);
 	}//end of getItem
 	
@@ -62,8 +59,7 @@ public class Inventory
 		gets the size of the inventory
 		post: returns an int of the size
 	*/
-	public int getSize()
-	{
+	public int getSize(){
 		return items.size();
 	}//end of getLength
 }//end of Inventory

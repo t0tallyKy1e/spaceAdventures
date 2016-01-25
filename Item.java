@@ -7,8 +7,7 @@ import java.lang.Math;
 **    spaceAdventures - Item class
 */
 
-public class Item
-{
+public class Item{
 	private double price;
 	private double minimumPrice;
 	private double maximumPrice;
@@ -25,8 +24,7 @@ public class Item
 				: double for minimum price
 				: double for maximum price
 	*/
-	public Item(String itemName, double itemMinimumPrice, double itemMaximumPrice)
-	{
+	public Item(String itemName, double itemMinimumPrice, double itemMaximumPrice){
 		name = itemName;
 		minimumPrice = itemMinimumPrice;
 		maximumPrice = itemMaximumPrice;
@@ -42,8 +40,7 @@ public class Item
 				: String for a name
 				: int for the stock
 	*/
-	public Item(String itemName, int stock)
-	{
+	public Item(String itemName, int stock){
 		name = itemName;
 		this.stock = stock;
 	}//end of Stock Item constructor #2
@@ -51,8 +48,7 @@ public class Item
 	/*
 		pre: requires an Item name as a String
 	*/
-	public Item(String itemName)
-	{
+	public Item(String itemName){
 		name = itemName;
 	}//end of Item constructor #3
 	
@@ -60,8 +56,7 @@ public class Item
 		gets name of item
 		post: returns a String of the name
 	*/
-	public String getName()
-	{
+	public String getName(){
 		return name;
 	}//end of getName
 	
@@ -69,8 +64,7 @@ public class Item
 		sets the price of an item
 		pre: requires a double for the new price of the Item
 	*/
-	public void setPrice(double newPrice)
-	{
+	public void setPrice(double newPrice){
 		price = newPrice;
 	}//end of setPrice
 	
@@ -78,8 +72,7 @@ public class Item
 		sets the stock of an item
 		pre: requires an int for the new stock of the Item
 	*/
-	public void setStock(int newStock)
-	{
+	public void setStock(int newStock){
 		stock = newStock;
 	}//end of setStock
 	
@@ -87,8 +80,7 @@ public class Item
 		gets the price of an item
 		post: returns a double of the price
 	*/
-	public double getPrice()
-	{
+	public double getPrice(){
 		return price;
 	}//end of getPrice
 	
@@ -96,8 +88,7 @@ public class Item
 		gets the stock of an item
 		post: returns the stock of the item as an int
 	*/
-	public int getStock()
-	{
+	public int getStock(){
 		return stock;
 	}//end of getStock
 	
@@ -105,8 +96,7 @@ public class Item
 		generates a random double for the price
 		post: returns an double for the random price
 	*/
-	public double getRandomPrice()
-	{
+	public double getRandomPrice(){
 		double range = maximumPrice - minimumPrice + 1;
 		double offset = minimumPrice;
 	
@@ -119,8 +109,7 @@ public class Item
 		generates a random int for the stock
 		post: returns an int for the random number
 	*/
-	public int getRandomStock()
-	{
+	public int getRandomStock(){
 		int range = MAXIMUM_STOCK - MINIMUM_STOCK + 1;
 		int offset = MINIMUM_STOCK;
 	
